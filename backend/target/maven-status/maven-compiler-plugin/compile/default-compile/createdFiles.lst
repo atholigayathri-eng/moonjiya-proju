@@ -12,6 +12,7 @@ com/educycle/repository/SkillRepository.class
 com/educycle/repository/SkillRequestRepository.class
 com/educycle/repository/ResourceRepository.class
 com/educycle/repository/ResourceRequestRepository.class
+com/educycle/config/DataInitializer.class
 com/educycle/service/SkillService.class
 com/educycle/entity/enums/TeachingMethod.class
 com/educycle/service/RequestService.class

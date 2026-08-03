@@ -7,6 +7,7 @@
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/controller/UserController.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/enums/TeachingMethod.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/UserDTO.java
+/Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/config/DataInitializer.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/enums/SkillStatus.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/enums/RequestStatus.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/enums/NotificationType.java
