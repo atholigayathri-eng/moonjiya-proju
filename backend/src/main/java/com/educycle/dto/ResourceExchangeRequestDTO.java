@@ -1,8 +1,14 @@
 package com.educycle.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 public class ResourceExchangeRequestDTO {
+    @JsonAlias({"itemId", "resourceId", "id"})
     private Long resourceId;
+
+    @JsonAlias({"userId", "requesterId"})
     private Long requesterId;
+
     private String message;
 
     public ResourceExchangeRequestDTO() {

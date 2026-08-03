@@ -1,9 +1,17 @@
 package com.educycle.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 public class SkillExchangeRequestDTO {
+    @JsonAlias({"itemId", "skillId", "id"})
     private Long skillId;
+
+    @JsonAlias({"userId", "learnerId"})
     private Long learnerId;
+
+    @JsonAlias({"scheduledDate", "preferredSchedule"})
     private String preferredSchedule;
+
     private String message;
 
     public SkillExchangeRequestDTO() {
