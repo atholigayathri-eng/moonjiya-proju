@@ -21,11 +21,13 @@
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/service/MessageService.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/repository/SkillRequestRepository.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/SkillDTO.java
+/Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/SkillExchangeRequestDTO.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/repository/NotificationRepository.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/service/UserService.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/ResourceRequest.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/AuthResponse.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/repository/ResourceRequestRepository.java
+/Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/ResourceExchangeRequestDTO.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/repository/CategoryRepository.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/config/CorsConfig.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/service/AuthService.java

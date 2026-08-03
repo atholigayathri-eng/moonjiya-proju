@@ -1,5 +1,7 @@
 package com.educycle.controller;
 
+import com.educycle.dto.ResourceExchangeRequestDTO;
+import com.educycle.dto.SkillExchangeRequestDTO;
 import com.educycle.entity.ResourceRequest;
 import com.educycle.entity.SkillRequest;
 import com.educycle.service.RequestService;
@@ -18,8 +20,8 @@ public class RequestController {
     private RequestService requestService;
 
     @PostMapping("/resource-requests")
-    public ResponseEntity<ResourceRequest> createResourceRequest(@RequestBody ResourceRequest request) {
-        return ResponseEntity.ok(requestService.createResourceRequest(request));
+    public ResponseEntity<ResourceRequest> createResourceRequest(@RequestBody ResourceExchangeRequestDTO requestDTO) {
+        return ResponseEntity.ok(requestService.createResourceRequestFromDTO(requestDTO));
     }
 
     @GetMapping("/resource-requests/{id}")
@@ -42,8 +44,8 @@ public class RequestController {
     }
 
     @PostMapping("/skill-requests")
-    public ResponseEntity<SkillRequest> createSkillRequest(@RequestBody SkillRequest request) {
-        return ResponseEntity.ok(requestService.createSkillRequest(request));
+    public ResponseEntity<SkillRequest> createSkillRequest(@RequestBody SkillExchangeRequestDTO requestDTO) {
+        return ResponseEntity.ok(requestService.createSkillRequestFromDTO(requestDTO));
     }
 
     @GetMapping("/skill-requests/{id}")
