@@ -12,8 +12,8 @@ export const authService = {
   },
 
   logout: async () => {
-    const response = await API.post('/auth/logout');
-    return response.data;
+    // Client-side stateless JWT logout (clear localStorage token)
+    return { success: true };
   },
 
   verifyEmail: async (token) => {
