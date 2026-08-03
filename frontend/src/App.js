@@ -1,0 +1,100 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import './css/index.css';
+
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
+
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Resources from './pages/Resources';
+import Skills from './pages/Skills';
+import Profile from './pages/Profile';
+import Messages from './pages/Messages';
+import AdminPanel from './pages/AdminPanel';
+import NotFound from './pages/NotFound';
+
+// Protected Route Wrapper
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
+};
+
+// Admin Route Wrapper
+const AdminRoute = ({ children }) => {
+  const { user, isAuthenticated, loading } = useAuth();
+  if (loading) return <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>;
+  return isAuthenticated && user?.role === 'ADMIN' ? children : <Navigate to="/" replace />;
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <NotificationProvider>
+        <Router>
+          <div className="d-flex flex-column min-vh-100">
+            <Navbar />
+            <main className="flex-grow-1">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/resources" element={<Resources />} />
+                <Route path="/skills" element={<Skills />} />
+
+                {/* Protected User Routes */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/messages"
+                  element={
+                    <ProtectedRoute>
+                      <Messages />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* Admin Only Route */}
+                <Route
+                  path="/admin"
+                  element={
+                    <AdminRoute>
+                      <AdminPanel />
+                    </AdminRoute>
+                  }
+                />
+
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </NotificationProvider>
+    </AuthProvider>
+  );
+}
+
+export default App;
