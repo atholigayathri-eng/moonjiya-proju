@@ -22,9 +22,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const data = await authService.login(email, password);
-    // Assuming backend returns { token: "...", user: { ... } } or similar payload
     const jwtToken = data.token || data.jwt;
-    const userData = data.user || { email, id: data.id || 1, name: data.name || email.split('@')[0] };
+    const userData = {
+      id: data.userId || data.id || 1,
+      email: data.email || email,
+      name: data.name || email.split('@')[0],
+      firstName: data.name ? data.name.split(' ')[0] : 'Student',
+      lastName: data.name ? data.name.split(' ')[1] || '' : ''
+    };
 
     setToken(jwtToken);
     setUser(userData);
