@@ -76,15 +76,8 @@ function App() {
                   }
                 />
 
-                {/* Admin Only Route */}
-                <Route
-                  path="/admin"
-                  element={
-                    <AdminRoute>
-                      <AdminPanel />
-                    </AdminRoute>
-                  }
-                />
+                {/* Dedicated Admin Portal Route */}
+                <Route path="/admin" element={<AdminPanel />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>

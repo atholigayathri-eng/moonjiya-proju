@@ -12,15 +12,20 @@ import com.educycle.repository.CategoryRepository;
 import com.educycle.repository.ResourceRepository;
 import com.educycle.repository.SkillRepository;
 import com.educycle.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 public class DataInitializer {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Bean
     public CommandLineRunner initData(CategoryRepository categoryRepository,
@@ -54,13 +59,28 @@ public class DataInitializer {
                 System.out.println(">>> Default EduCycle Categories Initialized!");
             }
 
-            // Seed initial demo user and sample items if database is fresh
-            if (userRepository.count() == 0) {
+            // Create dedicated Admin Account if not existing
+            if (!userRepository.existsByEmail("admin@educycle.edu")) {
+                User admin = new User();
+                admin.setEmail("admin@educycle.edu");
+                admin.setFirstName("System");
+                admin.setLastName("Admin");
+                admin.setRole("ADMIN");
+                admin.setPasswordHash(passwordEncoder.encode("admin123"));
+                admin.setCollege("Campus Administration");
+                admin.setDepartment("System Moderation");
+                userRepository.save(admin);
+                System.out.println(">>> Dedicated Admin Account Initialized: admin@educycle.edu / admin123");
+            }
+
+            // Seed initial demo user and sample items if no standard users exist
+            if (userRepository.count() <= 1) {
                 User demoUser = new User();
                 demoUser.setEmail("student@college.edu");
                 demoUser.setFirstName("Gayathri");
                 demoUser.setLastName("Atholi");
-                demoUser.setPasswordHash("$2a$10$L/FU1Dgmdx9zgX3lLz/Nl.SJp/BDOhnlH50zd0Ch3npm.MMkKAspm"); // password123
+                demoUser.setRole("USER");
+                demoUser.setPasswordHash(passwordEncoder.encode("password123"));
                 demoUser.setCollege("College of Engineering");
                 demoUser.setDepartment("Computer Science");
                 demoUser.setBio("Enthusiastic CS student interested in resource sharing and peer learning.");

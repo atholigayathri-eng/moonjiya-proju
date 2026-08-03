@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     if (token && savedUser) {
       try {
         const parsed = JSON.parse(savedUser);
-        setUser({ ...parsed, role: parsed.role || 'ADMIN' });
+        setUser(parsed);
       } catch (e) {
         console.error("Error parsing saved user:", e);
       }
@@ -28,9 +28,9 @@ export const AuthProvider = ({ children }) => {
       id: data.userId || data.id || 1,
       email: data.email || email,
       name: data.name || email.split('@')[0],
-      firstName: data.name ? data.name.split(' ')[0] : 'Student',
+      firstName: data.name ? data.name.split(' ')[0] : 'User',
       lastName: data.name ? data.name.split(' ')[1] || '' : '',
-      role: 'ADMIN'
+      role: data.role || 'USER'
     };
 
     setToken(jwtToken);

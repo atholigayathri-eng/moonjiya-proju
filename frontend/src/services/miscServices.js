@@ -51,27 +51,22 @@ export const adminService = {
   },
 
   getResources: async () => {
-    const response = await API.get('/admin/resources');
-    return response.data;
-  },
-
-  getReports: async () => {
-    const response = await API.get('/admin/reports');
-    return response.data;
+    const response = await API.get('/resources');
+    return response.data.content || response.data;
   },
 
   suspendUser: async (userId) => {
-    const response = await API.post('/admin/suspend-user', { userId });
+    const response = await API.delete(`/admin/users/${userId}`);
     return response.data;
   },
 
   deletePost: async (postId) => {
-    const response = await API.delete(`/admin/delete-post`, { data: { postId } });
+    const response = await API.delete(`/resources/${postId}`);
     return response.data;
   },
 
   getStatistics: async () => {
-    const response = await API.get('/admin/statistics');
+    const response = await API.get('/admin/stats');
     return response.data;
   }
 };

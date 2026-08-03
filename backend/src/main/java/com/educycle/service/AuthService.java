@@ -38,13 +38,14 @@ public class AuthService {
         user.setPhone(req.getPhone());
         user.setCollege(req.getCollege());
         user.setDepartment(req.getDepartment());
+        user.setRole("USER");
         user.setPasswordHash(passwordEncoder.encode(req.getPassword()));
 
         User savedUser = userRepository.save(user);
         String token = jwtTokenProvider.generateToken(savedUser.getEmail());
         String name = (savedUser.getFirstName() != null ? savedUser.getFirstName() : "") + " " +
                      (savedUser.getLastName() != null ? savedUser.getLastName() : "");
-        return new AuthResponse(token, savedUser.getUserId(), savedUser.getEmail(), name.trim());
+        return new AuthResponse(token, savedUser.getUserId(), savedUser.getEmail(), name.trim(), savedUser.getRole());
     }
 
     public AuthResponse login(AuthRequest authRequest) {
@@ -58,6 +59,6 @@ public class AuthService {
         String token = jwtTokenProvider.generateToken(user.getEmail());
         String name = (user.getFirstName() != null ? user.getFirstName() : "") + " " +
                      (user.getLastName() != null ? user.getLastName() : "");
-        return new AuthResponse(token, user.getUserId(), user.getEmail(), name.trim());
+        return new AuthResponse(token, user.getUserId(), user.getEmail(), name.trim(), user.getRole());
     }
 }

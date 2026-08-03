@@ -53,6 +53,8 @@ public class User {
     @Column(length = 1000)
     private String bio;
 
+    private String role = "USER"; // "USER" or "ADMIN"
+
     private Double rating = 0.0;
 
     @CreationTimestamp
@@ -177,6 +179,14 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Double getRating() {
