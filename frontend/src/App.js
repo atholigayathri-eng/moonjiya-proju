@@ -28,13 +28,6 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
-// Admin Route Wrapper
-const AdminRoute = ({ children }) => {
-  const { user, isAuthenticated, loading } = useAuth();
-  if (loading) return <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>;
-  return isAuthenticated && user?.role === 'ADMIN' ? children : <Navigate to="/" replace />;
-};
-
 function App() {
   return (
     <AuthProvider>
@@ -47,10 +40,24 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/resources" element={<Resources />} />
-                <Route path="/skills" element={<Skills />} />
 
-                {/* Protected User Routes */}
+                {/* Protected Routes - Login Required */}
+                <Route
+                  path="/resources"
+                  element={
+                    <ProtectedRoute>
+                      <Resources />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/skills"
+                  element={
+                    <ProtectedRoute>
+                      <Skills />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route
                   path="/dashboard"
                   element={
