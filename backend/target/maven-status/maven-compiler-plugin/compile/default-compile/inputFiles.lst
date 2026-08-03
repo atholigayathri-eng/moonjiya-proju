@@ -5,6 +5,7 @@
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/service/NotificationService.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/util/ValidationUtil.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/controller/UserController.java
+/Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/ResourceRequestDTO.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/enums/TeachingMethod.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/UserDTO.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/config/DataInitializer.java
@@ -44,6 +45,7 @@
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/service/ResourceService.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/AuthRequest.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/Resource.java
+/Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/SkillRequestDTO.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/EducycleApplication.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/controller/RequestController.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/controller/MessageController.java

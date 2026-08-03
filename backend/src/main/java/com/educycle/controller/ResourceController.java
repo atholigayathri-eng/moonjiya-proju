@@ -1,5 +1,6 @@
 package com.educycle.controller;
 
+import com.educycle.dto.ResourceRequestDTO;
 import com.educycle.entity.Resource;
 import com.educycle.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ public class ResourceController {
     }
 
     @PostMapping
-    public ResponseEntity<Resource> createResource(@RequestBody Resource resource) {
-        return ResponseEntity.ok(resourceService.saveResource(resource));
+    public ResponseEntity<Resource> createResource(@RequestBody ResourceRequestDTO resourceDTO) {
+        return ResponseEntity.ok(resourceService.createResourceFromDTO(resourceDTO));
     }
 
     @DeleteMapping("/{id}")

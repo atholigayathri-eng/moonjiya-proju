@@ -4,12 +4,9 @@ import com.educycle.entity.enums.SkillLevel;
 import com.educycle.entity.enums.SkillStatus;
 import com.educycle.entity.enums.TeachingMethod;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,11 +16,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "skills")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "requests"})
 public class Skill {
 
@@ -32,7 +24,7 @@ public class Skill {
     @Column(name = "skill_id")
     private Long skillId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "Tutor user is required")
     private User user;
@@ -57,11 +49,9 @@ public class Skill {
 
     private String availability;
 
-    @Builder.Default
     private Double rating = 0.0;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
     private SkillStatus status = SkillStatus.AVAILABLE;
 
     @CreationTimestamp
@@ -73,6 +63,104 @@ public class Skill {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
     private List<SkillRequest> requests = new ArrayList<>();
+
+    public Skill() {
+    }
+
+    public Long getSkillId() {
+        return skillId;
+    }
+
+    public void setSkillId(Long skillId) {
+        this.skillId = skillId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getSkillName() {
+        return skillName;
+    }
+
+    public void setSkillName(String skillName) {
+        this.skillName = skillName;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public SkillLevel getLevel() {
+        return level;
+    }
+
+    public void setLevel(SkillLevel level) {
+        this.level = level;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TeachingMethod getTeachingMethod() {
+        return teachingMethod;
+    }
+
+    public void setTeachingMethod(TeachingMethod teachingMethod) {
+        this.teachingMethod = teachingMethod;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public SkillStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SkillStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

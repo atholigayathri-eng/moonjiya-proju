@@ -5,6 +5,7 @@ com/educycle/entity/enums/ResourceStatus.class
 com/educycle/service/MessageService.class
 com/educycle/exception/UnauthorizedException.class
 com/educycle/config/CorsConfig$1.class
+com/educycle/dto/ResourceRequestDTO.class
 com/educycle/service/UserService.class
 com/educycle/dto/AuthRequest.class
 com/educycle/exception/GlobalExceptionHandler.class
@@ -24,6 +25,7 @@ com/educycle/security/JwtAuthenticationFilter.class
 com/educycle/controller/AdminController.class
 com/educycle/entity/Rating.class
 com/educycle/config/CorsConfig.class
+com/educycle/dto/SkillRequestDTO.class
 com/educycle/repository/MessageRepository.class
 com/educycle/entity/User.class
 com/educycle/repository/NotificationRepository.class

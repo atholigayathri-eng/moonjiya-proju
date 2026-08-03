@@ -1,5 +1,6 @@
 package com.educycle.controller;
 
+import com.educycle.dto.SkillRequestDTO;
 import com.educycle.entity.Skill;
 import com.educycle.service.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ public class SkillController {
     }
 
     @PostMapping
-    public ResponseEntity<Skill> createSkill(@RequestBody Skill skill) {
-        return ResponseEntity.ok(skillService.saveSkill(skill));
+    public ResponseEntity<Skill> createSkill(@RequestBody SkillRequestDTO skillDTO) {
+        return ResponseEntity.ok(skillService.createSkillFromDTO(skillDTO));
     }
 
     @DeleteMapping("/{id}")
