@@ -36,6 +36,7 @@ com/educycle/entity/Resource.class
 com/educycle/entity/Category.class
 com/educycle/controller/UserController.class
 com/educycle/service/RatingService.class
+com/educycle/dto/RegisterRequest.class
 com/educycle/entity/ResourceRequest.class
 com/educycle/entity/Skill.class
 com/educycle/EducycleApplication.class

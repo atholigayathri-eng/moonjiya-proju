@@ -48,6 +48,7 @@
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/controller/RequestController.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/controller/MessageController.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/enums/SkillLevel.java
+/Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/RegisterRequest.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/enums/ResourceStatus.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/exception/UnauthorizedException.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/security/SecurityConfig.java
