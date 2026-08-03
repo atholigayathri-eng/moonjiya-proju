@@ -1,23 +1,15 @@
 package com.educycle.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "messages")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Message {
 
@@ -48,11 +40,77 @@ public class Message {
     @Column(name = "message_text", length = 2000, nullable = false)
     private String messageText;
 
-    @Builder.Default
     @Column(name = "is_read")
     private Boolean read = false;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    public Message() {
+    }
+
+    public Long getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(Long messageId) {
+        this.messageId = messageId;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public User getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
+    }
+
+    public ResourceRequest getResourceRequest() {
+        return resourceRequest;
+    }
+
+    public void setResourceRequest(ResourceRequest resourceRequest) {
+        this.resourceRequest = resourceRequest;
+    }
+
+    public SkillRequest getSkillRequest() {
+        return skillRequest;
+    }
+
+    public void setSkillRequest(SkillRequest skillRequest) {
+        this.skillRequest = skillRequest;
+    }
+
+    public String getMessageText() {
+        return messageText;
+    }
+
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
+    }
+
+    public Boolean getRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
