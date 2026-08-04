@@ -1,5 +1,6 @@
 package com.educycle.controller;
 
+import com.educycle.dto.RequestDisplayDTO;
 import com.educycle.dto.ResourceExchangeRequestDTO;
 import com.educycle.dto.SkillExchangeRequestDTO;
 import com.educycle.entity.ResourceRequest;
@@ -68,13 +69,13 @@ public class RequestController {
     }
 
     @GetMapping("/my-requests")
-    public ResponseEntity<List<Object>> getMyIncomingRequests(@RequestParam(required = false) Long userId) {
+    public ResponseEntity<List<RequestDisplayDTO>> getMyIncomingRequests(@RequestParam(required = false) Long userId) {
         Long targetId = userId != null ? userId : 1L;
         return ResponseEntity.ok(requestService.getMyIncomingRequests(targetId));
     }
 
     @GetMapping("/my-sent-requests")
-    public ResponseEntity<List<Object>> getMySentRequests(@RequestParam(required = false) Long userId) {
+    public ResponseEntity<List<RequestDisplayDTO>> getMySentRequests(@RequestParam(required = false) Long userId) {
         Long targetId = userId != null ? userId : 1L;
         return ResponseEntity.ok(requestService.getMySentRequests(targetId));
     }

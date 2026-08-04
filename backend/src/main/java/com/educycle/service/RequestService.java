@@ -1,5 +1,6 @@
 package com.educycle.service;
 
+import com.educycle.dto.RequestDisplayDTO;
 import com.educycle.dto.ResourceExchangeRequestDTO;
 import com.educycle.dto.SkillExchangeRequestDTO;
 import com.educycle.entity.*;
@@ -123,22 +124,30 @@ public class RequestService {
         skillRequestRepository.deleteById(id);
     }
 
-    public List<Object> getMyIncomingRequests(Long userId) {
+    public List<RequestDisplayDTO> getMyIncomingRequests(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
-        List<Object> incoming = new ArrayList<>();
+        List<RequestDisplayDTO> incoming = new ArrayList<>();
         if (user != null) {
-            incoming.addAll(resourceRequestRepository.findByOwner(user));
-            incoming.addAll(skillRequestRepository.findByTutor(user));
+            for (ResourceRequest rr : resourceRequestRepository.findByOwner(user)) {
+                incoming.add(RequestDisplayDTO.fromResourceRequest(rr));
+            }
+            for (SkillRequest sr : skillRequestRepository.findByTutor(user)) {
+                incoming.add(RequestDisplayDTO.fromSkillRequest(sr));
+            }
         }
         return incoming;
     }
 
-    public List<Object> getMySentRequests(Long userId) {
+    public List<RequestDisplayDTO> getMySentRequests(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
-        List<Object> sent = new ArrayList<>();
+        List<RequestDisplayDTO> sent = new ArrayList<>();
         if (user != null) {
-            sent.addAll(resourceRequestRepository.findByRequester(user));
-            sent.addAll(skillRequestRepository.findByLearner(user));
+            for (ResourceRequest rr : resourceRequestRepository.findByRequester(user)) {
+                sent.add(RequestDisplayDTO.fromResourceRequest(rr));
+            }
+            for (SkillRequest sr : skillRequestRepository.findByLearner(user)) {
+                sent.add(RequestDisplayDTO.fromSkillRequest(sr));
+            }
         }
         return sent;
     }

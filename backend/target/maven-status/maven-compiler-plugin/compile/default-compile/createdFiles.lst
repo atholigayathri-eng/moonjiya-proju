@@ -7,6 +7,7 @@ com/educycle/service/MessageService.class
 com/educycle/exception/UnauthorizedException.class
 com/educycle/config/CorsConfig$1.class
 com/educycle/dto/ResourceRequestDTO.class
+com/educycle/dto/RequestDisplayDTO.class
 com/educycle/service/UserService.class
 com/educycle/dto/AuthRequest.class
 com/educycle/exception/GlobalExceptionHandler.class

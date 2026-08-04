@@ -1,6 +1,7 @@
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/ResourceDTO.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/repository/UserRepository.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/SkillRequest.java
+/Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/dto/RequestDisplayDTO.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/entity/Notification.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/service/NotificationService.java
 /Users/gayathri/Desktop/project java/backend/src/main/java/com/educycle/util/ValidationUtil.java

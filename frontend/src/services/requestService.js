@@ -2,7 +2,16 @@ import API from './api';
 
 export const requestService = {
   createResourceRequest: async (data) => {
-    const response = await API.post('/resource-requests', data);
+    const userStr = localStorage.getItem('user');
+    let requesterId = null;
+    if (userStr) {
+      try {
+        const u = JSON.parse(userStr);
+        requesterId = u.id || u.userId;
+      } catch (e) {}
+    }
+    const payload = { ...data, requesterId };
+    const response = await API.post('/resource-requests', payload);
     return response.data;
   },
 
@@ -22,7 +31,16 @@ export const requestService = {
   },
 
   createSkillRequest: async (data) => {
-    const response = await API.post('/skill-requests', data);
+    const userStr = localStorage.getItem('user');
+    let learnerId = null;
+    if (userStr) {
+      try {
+        const u = JSON.parse(userStr);
+        learnerId = u.id || u.userId;
+      } catch (e) {}
+    }
+    const payload = { ...data, learnerId };
+    const response = await API.post('/skill-requests', payload);
     return response.data;
   },
 
@@ -41,13 +59,29 @@ export const requestService = {
     return response.data;
   },
 
-  getMyIncomingRequests: async () => {
-    const response = await API.get('/my-requests');
+  getMyIncomingRequests: async (userId) => {
+    const userStr = localStorage.getItem('user');
+    let uId = userId;
+    if (!uId && userStr) {
+      try {
+        const u = JSON.parse(userStr);
+        uId = u.id || u.userId;
+      } catch (e) {}
+    }
+    const response = await API.get(uId ? `/my-requests?userId=${uId}` : '/my-requests');
     return response.data;
   },
 
-  getMySentRequests: async () => {
-    const response = await API.get('/my-sent-requests');
+  getMySentRequests: async (userId) => {
+    const userStr = localStorage.getItem('user');
+    let uId = userId;
+    if (!uId && userStr) {
+      try {
+        const u = JSON.parse(userStr);
+        uId = u.id || u.userId;
+      } catch (e) {}
+    }
+    const response = await API.get(uId ? `/my-sent-requests?userId=${uId}` : '/my-sent-requests');
     return response.data;
   }
 };
