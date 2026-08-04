@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { adminService } from '../services/miscServices';
 import { useNotification } from '../context/NotificationContext';
@@ -19,7 +19,7 @@ const AdminPanel = () => {
 
   const isAdminLoggedIn = isAuthenticated && user?.role === 'ADMIN';
 
-  const fetchAdminData = async () => {
+  const fetchAdminData = useCallback(async () => {
     setLoading(true);
     try {
       const [st, usrs, res] = await Promise.all([
@@ -36,13 +36,13 @@ const AdminPanel = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showError]);
 
   useEffect(() => {
     if (isAdminLoggedIn) {
       fetchAdminData();
     }
-  }, [isAdminLoggedIn]);
+  }, [isAdminLoggedIn, fetchAdminData]);
 
   const handleAdminLogin = async (e) => {
     e.preventDefault();
