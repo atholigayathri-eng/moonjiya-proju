@@ -12,8 +12,12 @@ public class RequestDisplayDTO {
     private String itemTitle;
     private Long requesterId;
     private String requesterName;
+    private String requesterEmail;
+    private String requesterPhone;
     private Long ownerId;
     private String ownerName;
+    private String ownerEmail;
+    private String ownerPhone;
     private String status;
     private String message;
     private String preferredSchedule;
@@ -35,12 +39,16 @@ public class RequestDisplayDTO {
             String name = (req.getRequester().getFirstName() != null ? req.getRequester().getFirstName() : "") + " " +
                           (req.getRequester().getLastName() != null ? req.getRequester().getLastName() : "");
             dto.setRequesterName(name.trim().isEmpty() ? req.getRequester().getEmail() : name.trim());
+            dto.setRequesterEmail(req.getRequester().getEmail());
+            dto.setRequesterPhone(req.getRequester().getPhone());
         }
         if (req.getOwner() != null) {
             dto.setOwnerId(req.getOwner().getUserId());
             String name = (req.getOwner().getFirstName() != null ? req.getOwner().getFirstName() : "") + " " +
                           (req.getOwner().getLastName() != null ? req.getOwner().getLastName() : "");
             dto.setOwnerName(name.trim().isEmpty() ? req.getOwner().getEmail() : name.trim());
+            dto.setOwnerEmail(req.getOwner().getEmail());
+            dto.setOwnerPhone(req.getOwner().getPhone());
         }
         dto.setStatus(req.getStatus() != null ? req.getStatus().name() : "PENDING");
         dto.setMessage(req.getMessage());
@@ -61,12 +69,16 @@ public class RequestDisplayDTO {
             String name = (req.getLearner().getFirstName() != null ? req.getLearner().getFirstName() : "") + " " +
                           (req.getLearner().getLastName() != null ? req.getLearner().getLastName() : "");
             dto.setRequesterName(name.trim().isEmpty() ? req.getLearner().getEmail() : name.trim());
+            dto.setRequesterEmail(req.getLearner().getEmail());
+            dto.setRequesterPhone(req.getLearner().getPhone());
         }
         if (req.getTutor() != null) {
             dto.setOwnerId(req.getTutor().getUserId());
             String name = (req.getTutor().getFirstName() != null ? req.getTutor().getFirstName() : "") + " " +
                           (req.getTutor().getLastName() != null ? req.getTutor().getLastName() : "");
             dto.setOwnerName(name.trim().isEmpty() ? req.getTutor().getEmail() : name.trim());
+            dto.setOwnerEmail(req.getTutor().getEmail());
+            dto.setOwnerPhone(req.getTutor().getPhone());
         }
         dto.setStatus(req.getStatus() != null ? req.getStatus().name() : "PENDING");
         dto.setMessage(req.getMessage());
@@ -74,6 +86,39 @@ public class RequestDisplayDTO {
         dto.setCreatedAt(req.getCreatedAt());
         return dto;
     }
+
+    public String getRequesterEmail() {
+        return requesterEmail;
+    }
+
+    public void setRequesterEmail(String requesterEmail) {
+        this.requesterEmail = requesterEmail;
+    }
+
+    public String getRequesterPhone() {
+        return requesterPhone;
+    }
+
+    public void setRequesterPhone(String requesterPhone) {
+        this.requesterPhone = requesterPhone;
+    }
+
+    public String getOwnerEmail() {
+        return ownerEmail;
+    }
+
+    public void setOwnerEmail(String ownerEmail) {
+        this.ownerEmail = ownerEmail;
+    }
+
+    public String getOwnerPhone() {
+        return ownerPhone;
+    }
+
+    public void setOwnerPhone(String ownerPhone) {
+        this.ownerPhone = ownerPhone;
+    }
+
 
     public Long getId() {
         return id;

@@ -46,16 +46,18 @@ const ResourceCard = ({ resource, onRequest }) => {
           <div className="d-flex align-items-center gap-2">
             <i className="bi bi-person-circle fs-5 text-secondary"></i>
             <span className="small text-muted text-truncate" style={{ maxWidth: '120px' }}>
-              {resource.ownerName || resource.userName || 'Student'}
+              {resource.user ? `${resource.user.firstName || ''} ${resource.user.lastName || ''}`.trim() : (resource.ownerName || resource.userName || 'Student')}
             </span>
           </div>
 
-          <button
-            className="btn btn-sm btn-primary px-3 fw-semibold"
-            onClick={() => onRequest && onRequest(resource)}
-          >
-            <i className="bi bi-send me-1"></i>Request
-          </button>
+          {onRequest && (
+            <button
+              className="btn btn-sm btn-primary px-3 fw-semibold"
+              onClick={() => onRequest && onRequest(resource)}
+            >
+              <i className="bi bi-send me-1"></i>Request
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const MessageBox = ({ activeMatch, messages, onSendMessage }) => {
+const MessageBox = ({ activeMatch, messages, onSendMessage, onBack }) => {
   const [text, setText] = useState('');
 
   const handleSubmit = (e) => {
@@ -23,7 +23,12 @@ const MessageBox = ({ activeMatch, messages, onSendMessage }) => {
   return (
     <div className="card h-100 border-0 shadow-sm d-flex flex-column">
       <div className="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-        <div className="d-flex align-items-center gap-3">
+        <div className="d-flex align-items-center gap-2">
+          {onBack && (
+            <button className="btn btn-sm btn-light border-0 d-md-none me-1" onClick={onBack}>
+              <i className="bi bi-chevron-left fs-5"></i>
+            </button>
+          )}
           <div className="avatar-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px', borderRadius: '50%' }}>
             {activeMatch.peerName ? activeMatch.peerName.charAt(0).toUpperCase() : 'P'}
           </div>
@@ -40,7 +45,7 @@ const MessageBox = ({ activeMatch, messages, onSendMessage }) => {
         )}
       </div>
 
-      <div className="card-body overflow-auto flex-grow-1 p-3 bg-light" style={{ maxHeight: '450px' }}>
+      <div className="card-body overflow-auto flex-grow-1 p-3 bg-light">
         {messages && messages.length > 0 ? (
           messages.map((msg, index) => (
             <div

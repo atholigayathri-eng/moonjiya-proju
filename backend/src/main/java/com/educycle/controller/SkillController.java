@@ -17,8 +17,8 @@ public class SkillController {
     private SkillService skillService;
 
     @GetMapping
-    public ResponseEntity<List<Skill>> getAllSkills() {
-        return ResponseEntity.ok(skillService.getAllSkills());
+    public ResponseEntity<List<Skill>> getAllSkills(@RequestParam(required = false) Long userId) {
+        return ResponseEntity.ok(skillService.getAllSkills(userId));
     }
 
     @GetMapping("/{id}")

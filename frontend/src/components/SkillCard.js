@@ -56,12 +56,14 @@ const SkillCard = ({ skill, onRequest }) => {
             </div>
           </div>
 
-          <button
-            className="btn btn-sm btn-outline-primary px-3 fw-semibold"
-            onClick={() => onRequest && onRequest(skill)}
-          >
-            <i className="bi bi-person-plus me-1"></i>Learn
-          </button>
+          {onRequest && (
+            <button
+              className="btn btn-sm btn-outline-primary px-3 fw-semibold"
+              onClick={() => onRequest && onRequest(skill)}
+            >
+              <i className="bi bi-person-plus me-1"></i>Learn
+            </button>
+          )}
         </div>
       </div>
     </div>

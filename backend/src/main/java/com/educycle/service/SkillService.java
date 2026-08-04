@@ -22,7 +22,14 @@ public class SkillService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<Skill> getAllSkills() {
+    public List<Skill> getAllSkills(Long userId) {
+        if (userId != null) {
+            User user = userRepository.findById(userId).orElse(null);
+            if (user != null) {
+                return skillRepository.findByUser(user);
+            }
+            return new java.util.ArrayList<>();
+        }
         return skillRepository.findAll();
     }
 

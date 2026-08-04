@@ -88,7 +88,7 @@ const Home = () => {
             </div>
             <div className="col-lg-5 text-center">
               <img
-                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80"
+                src="/photo.jpg"
                 alt="Students Collaboration"
                 className="img-fluid rounded-4 shadow-lg border border-3 border-white"
               />

@@ -22,7 +22,14 @@ public class ResourceService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<Resource> getAllResources() {
+    public List<Resource> getAllResources(Long userId) {
+        if (userId != null) {
+            User user = userRepository.findById(userId).orElse(null);
+            if (user != null) {
+                return resourceRepository.findByUser(user);
+            }
+            return new java.util.ArrayList<>();
+        }
         return resourceRepository.findAll();
     }
 

@@ -35,15 +35,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-lg-3 col-md-6">
-            <h6 className="fw-bold mb-3">Group 13 - Project Team</h6>
-            <ul className="list-unstyled small text-secondary">
-              <li>Ahal Dev M S</li>
-              <li>Gayathri Atholi</li>
-              <li>Aaditya V</li>
-              <li>Akshara M V</li>
-            </ul>
-          </div>
+
         </div>
 
         <hr className="my-4 border-secondary" />

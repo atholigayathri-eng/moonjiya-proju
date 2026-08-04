@@ -26,7 +26,8 @@ const Messages = () => {
           title: r.itemTitle || 'Resource Exchange',
           contactRevealed: true,
           peerEmail: r.requesterEmail,
-          peerPhone: r.requesterPhone
+          peerPhone: r.requesterPhone,
+          type: r.type
         }));
 
         const acceptedOut = (out || []).filter(r => r.status === 'ACCEPTED').map(r => ({
@@ -35,7 +36,8 @@ const Messages = () => {
           title: r.itemTitle || 'Resource Request',
           contactRevealed: true,
           peerEmail: r.ownerEmail,
-          peerPhone: r.ownerPhone
+          peerPhone: r.ownerPhone,
+          type: r.type
         }));
 
         const allMatches = [...acceptedInc, ...acceptedOut];
@@ -58,7 +60,15 @@ const Messages = () => {
     const fetchChat = async () => {
       try {
         const data = await messageService.getChatHistory(activeMatch.requestId);
-        setMessages(data || []);
+        const userStr = localStorage.getItem('user');
+        const currentUser = userStr ? JSON.parse(userStr) : null;
+        const currentUserId = currentUser?.id || currentUser?.userId;
+
+        const mappedMessages = (data || []).map(m => ({
+          ...m,
+          isMine: m.sender?.userId === currentUserId || m.senderId === currentUserId
+        }));
+        setMessages(mappedMessages);
       } catch (err) {
         console.error("Failed to load chat history", err);
       }
@@ -69,8 +79,14 @@ const Messages = () => {
   const handleSendMessage = async (text) => {
     if (!activeMatch) return;
     try {
+      const userStr = localStorage.getItem('user');
+      const currentUser = userStr ? JSON.parse(userStr) : null;
+      const currentUserId = currentUser?.id || currentUser?.userId || 1;
+
       const newMsg = {
         requestId: activeMatch.requestId,
+        senderId: currentUserId,
+        type: activeMatch.type || 'resource',
         messageText: text,
         timestamp: new Date().toISOString(),
         isMine: true
@@ -84,10 +100,10 @@ const Messages = () => {
 
   return (
     <div className="container py-4">
-      <h2 className="fw-bold mb-4">In-App Campus Messaging</h2>
-      <div className="row g-4" style={{ height: '600px' }}>
+      <h2 className="fw-bold mb-4 d-none d-md-block">In-App Campus Messaging</h2>
+      <div className="row g-0 g-md-4" style={{ height: 'calc(100vh - 140px)', minHeight: '500px' }}>
         {/* Contacts Sidebar */}
-        <div className="col-md-4 h-100">
+        <div className={`col-md-4 h-100 ${activeMatch ? 'd-none d-md-block' : 'd-block'}`}>
           <div className="card h-100 border-0 shadow-sm">
             <div className="card-header bg-white fw-bold py-3 border-bottom">
               <i className="bi bi-people me-2 text-primary"></i>Accepted Matches
@@ -129,11 +145,12 @@ const Messages = () => {
         </div>
 
         {/* Chat Area */}
-        <div className="col-md-8 h-100">
+        <div className={`col-md-8 h-100 ${!activeMatch ? 'd-none d-md-block' : 'd-block'}`}>
           <MessageBox
             activeMatch={activeMatch}
             messages={messages}
             onSendMessage={handleSendMessage}
+            onBack={() => setActiveMatch(null)}
           />
         </div>
       </div>

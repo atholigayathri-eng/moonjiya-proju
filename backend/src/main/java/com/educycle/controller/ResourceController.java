@@ -17,8 +17,8 @@ public class ResourceController {
     private ResourceService resourceService;
 
     @GetMapping
-    public ResponseEntity<List<Resource>> getAllResources() {
-        return ResponseEntity.ok(resourceService.getAllResources());
+    public ResponseEntity<List<Resource>> getAllResources(@RequestParam(required = false) Long userId) {
+        return ResponseEntity.ok(resourceService.getAllResources(userId));
     }
 
     @GetMapping("/{id}")

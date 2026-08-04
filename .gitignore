@@ -1,0 +1,12 @@
+# Maven build outputs
+**/target/
+*.class
+
+# Node build outputs
+**/node_modules/
+**/build/
+.env
+
+# System files
+.DS_Store
+Thumbs.db
