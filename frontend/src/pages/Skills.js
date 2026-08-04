@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 
 const Skills = () => {
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { showSuccess, showError } = useNotification();
 
   const [skills, setSkills] = useState([]);
@@ -57,7 +57,8 @@ const Skills = () => {
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     try {
-      await skillService.create(newSkill);
+      const userId = user?.userId || user?.id;
+      await skillService.create({ ...newSkill, userId });
       showSuccess("Skill offer created successfully!");
       setShowPostModal(false);
       setNewSkill({

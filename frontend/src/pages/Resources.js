@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 
 const Resources = () => {
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { showSuccess, showError } = useNotification();
 
   const [resources, setResources] = useState([]);
@@ -58,7 +58,8 @@ const Resources = () => {
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     try {
-      await resourceService.create(newResource);
+      const userId = user?.userId || user?.id;
+      await resourceService.create({ ...newResource, userId });
       showSuccess("Resource posted successfully!");
       setShowPostModal(false);
       setNewResource({
