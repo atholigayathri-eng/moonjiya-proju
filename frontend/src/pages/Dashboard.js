@@ -21,11 +21,12 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
+      const userId = user?.userId || user?.id;
       const [resData, skillData, incData, outData] = await Promise.all([
-        resourceService.getAll({ userId: user?.id }),
-        skillService.getAll({ userId: user?.id }),
-        requestService.getMyIncomingRequests(),
-        requestService.getMySentRequests(),
+        resourceService.getAll({ userId }),
+        skillService.getAll({ userId }),
+        requestService.getMyIncomingRequests(userId),
+        requestService.getMySentRequests(userId),
       ]);
 
       setMyResources(resData.content || resData || []);
@@ -40,9 +41,11 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchDashboardData();
+    if (user) {
+      fetchDashboardData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   const handleRequestStatusUpdate = async (id, type, status) => {
     try {
