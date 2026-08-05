@@ -1,9 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 
 const RequestModal = ({ show, onClose, item, type, onSubmit }) => {
   const [message, setMessage] = useState('');
   const [scheduledDate, setScheduledDate] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const modalContentRef = useRef(null);
+  const backdropRef = useRef(null);
+
+  useEffect(() => {
+    if (show) {
+      if (backdropRef.current) {
+        gsap.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.25 });
+      }
+      if (modalContentRef.current) {
+        gsap.fromTo(
+          modalContentRef.current,
+          { scale: 0.9, opacity: 0, y: 20 },
+          { scale: 1, opacity: 1, y: 0, duration: 0.35, ease: 'back.out(1.5)' }
+        );
+      }
+    }
+  }, [show]);
 
   if (!show || !item) return null;
 
@@ -27,28 +45,28 @@ const RequestModal = ({ show, onClose, item, type, onSubmit }) => {
   };
 
   return (
-    <div className="modal show d-block tab-modal-backdrop" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+    <div ref={backdropRef} className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(3, 27, 56, 0.55)', backdropFilter: 'blur(8px)' }}>
       <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content shadow border-0">
-          <div className="modal-header bg-primary text-white">
-            <h5 className="modal-title fw-bold">
-              <i className={`bi ${type === 'resource' ? 'bi-box-seam' : 'bi-mortarboard'} me-2`}></i>
-              Request {type === 'resource' ? 'Resource' : 'Skill Session'}
+        <div ref={modalContentRef} className="modal-content glass-card overflow-hidden p-0 border-0">
+          <div className="modal-header text-white p-4" style={{ background: 'var(--primary-gradient)' }}>
+            <h5 className="modal-title fw-bold d-flex align-items-center gap-2">
+              <i className={`bi ${type === 'resource' ? 'bi-box-seam-fill' : 'bi-mortarboard-fill'} fs-4`}></i>
+              Request {type === 'resource' ? 'Academic Resource' : 'Skill Session'}
             </h5>
-            <button type="button" className="btn-close btn-close-white" onClick={onClose} aria-label="Close"></button>
+            <button type="button" className="btn-close btn-close-white shadow-none" onClick={onClose} aria-label="Close"></button>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="modal-body">
-              <div className="bg-light p-3 rounded mb-3">
-                <h6 className="fw-bold mb-1">{item.title || item.skillName}</h6>
-                <small className="text-muted">
+            <div className="modal-body p-4">
+              <div className="p-3 rounded-4 mb-4" style={{ background: 'var(--primary-light)', border: '1px solid rgba(5, 79, 163, 0.1)' }}>
+                <h6 className="fw-bold text-dark mb-1">{item.title || item.skillName}</h6>
+                <div className="small text-primary fw-semibold">
                   Owner/Tutor: {item.ownerName || item.tutorName || item.userName || 'Campus Peer'}
-                </small>
+                </div>
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-semibold">Note to Peer</label>
+                <label className="form-label fw-semibold text-dark">Note to Peer</label>
                 <textarea
                   className="form-control"
                   rows="3"
@@ -61,7 +79,7 @@ const RequestModal = ({ show, onClose, item, type, onSubmit }) => {
 
               {type === 'skill' && (
                 <div className="mb-3">
-                  <label className="form-label fw-semibold">Preferred Schedule / Date</label>
+                  <label className="form-label fw-semibold text-dark">Preferred Schedule / Date</label>
                   <input
                     type="datetime-local"
                     className="form-control"
@@ -73,11 +91,11 @@ const RequestModal = ({ show, onClose, item, type, onSubmit }) => {
               )}
             </div>
 
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" onClick={onClose} disabled={submitting}>
+            <div className="modal-footer p-4 pt-0 border-0">
+              <button type="button" className="btn btn-light px-4" onClick={onClose} disabled={submitting}>
                 Cancel
               </button>
-              <button type="submit" className="btn btn-primary fw-semibold" disabled={submitting}>
+              <button type="submit" className="btn btn-primary px-4 fw-bold" disabled={submitting}>
                 {submitting ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>

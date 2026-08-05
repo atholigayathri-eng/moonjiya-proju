@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { gsap } from 'gsap';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const navRef = useRef(null);
+  const linksRef = useRef(null);
+
+  useEffect(() => {
+    if (navRef.current) {
+      gsap.fromTo(
+        navRef.current,
+        { y: -30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }
+      );
+    }
+    if (linksRef.current) {
+      gsap.fromTo(
+        linksRef.current.children,
+        { y: -10, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, stagger: 0.08, ease: 'power2.out', delay: 0.2 }
+      );
+    }
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -12,14 +32,20 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+    <nav ref={navRef} className="navbar navbar-expand-lg glass-nav sticky-top py-3">
       <div className="container">
-        <Link className="navbar-brand d-flex align-items-center gap-2 fw-bold" to="/">
-          <i className="bi bi-recycle fs-3 text-warning"></i>
-          <span>EduCycle</span>
+        <Link className="navbar-brand d-flex align-items-center gap-2.5 fw-bold fs-4 text-primary" to="/">
+          <div 
+            className="d-flex align-items-center justify-content-center text-white rounded-circle shadow-sm"
+            style={{ width: '38px', height: '38px', background: 'var(--primary-gradient)' }}
+          >
+            <i className="bi bi-recycle fs-5"></i>
+          </div>
+          <span style={{ letterSpacing: '-0.02em', color: 'var(--primary-color)' }}>EduCycle</span>
         </Link>
+
         <button
-          className="navbar-toggler"
+          className="navbar-toggler border-0 shadow-none"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
@@ -31,60 +57,63 @@ const Navbar = () => {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <ul ref={linksRef} className="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-lg-1">
             <li className="nav-item">
-              <NavLink className="nav-link" to="/">Home</NavLink>
+              <NavLink className="nav-link px-3 py-2 fw-semibold" to="/">Home</NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="/resources">Resources</NavLink>
+              <NavLink className="nav-link px-3 py-2 fw-semibold" to="/resources">Resources</NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="/skills">Skills</NavLink>
+              <NavLink className="nav-link px-3 py-2 fw-semibold" to="/skills">Skills</NavLink>
             </li>
             {isAuthenticated && (
               <>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/dashboard">Dashboard</NavLink>
+                  <NavLink className="nav-link px-3 py-2 fw-semibold" to="/dashboard">Dashboard</NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/messages">Messages</NavLink>
+                  <NavLink className="nav-link px-3 py-2 fw-semibold" to="/messages">Messages</NavLink>
                 </li>
                 {user && user.role === 'ADMIN' && (
                   <li className="nav-item">
-                    <NavLink className="nav-link" to="/admin">Admin Panel</NavLink>
+                    <NavLink className="nav-link px-3 py-2 fw-semibold text-danger" to="/admin">
+                      <i className="bi bi-shield-lock me-1"></i>Admin
+                    </NavLink>
                   </li>
                 )}
               </>
             )}
           </ul>
 
-          <div className="d-flex align-items-center gap-2">
+          <div className="d-flex align-items-center gap-3">
             {isAuthenticated ? (
               <div className="dropdown">
                 <button
-                  className="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
+                  className="btn btn-light dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 border-0 shadow-sm"
                   type="button"
                   id="userDropdown"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
+                  style={{ background: 'var(--primary-light)', color: 'var(--primary-color)', borderRadius: '50px' }}
                 >
                   <i className="bi bi-person-circle fs-5"></i>
-                  <span>{user ? user.firstName || user.name || user.email : 'User'}</span>
+                  <span className="fw-bold">{user ? user.firstName || user.name || user.email : 'User'}</span>
                 </button>
-                <ul className="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                <ul className="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2" style={{ borderRadius: '16px' }} aria-labelledby="userDropdown">
                   <li>
-                    <Link className="dropdown-item" to="/profile">
-                      <i className="bi bi-person me-2"></i>My Profile
+                    <Link className="dropdown-item rounded-3 py-2 fw-medium" to="/profile">
+                      <i className="bi bi-person text-primary me-2"></i>My Profile
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/dashboard">
-                      <i className="bi bi-speedometer2 me-2"></i>Dashboard
+                    <Link className="dropdown-item rounded-3 py-2 fw-medium" to="/dashboard">
+                      <i className="bi bi-speedometer2 text-primary me-2"></i>Dashboard
                     </Link>
                   </li>
-                  <li><hr className="dropdown-divider" /></li>
+                  <li><hr className="dropdown-divider opacity-10" /></li>
                   <li>
-                    <button className="dropdown-item text-danger" onClick={handleLogout}>
+                    <button className="dropdown-item rounded-3 py-2 fw-medium text-danger" onClick={handleLogout}>
                       <i className="bi bi-box-arrow-right me-2"></i>Logout
                     </button>
                   </li>
@@ -92,8 +121,8 @@ const Navbar = () => {
               </div>
             ) : (
               <>
-                <Link to="/login" className="btn btn-outline-light me-2">Login</Link>
-                <Link to="/register" className="btn btn-warning text-dark fw-semibold">Register</Link>
+                <Link to="/login" className="btn btn-outline-primary px-4">Login</Link>
+                <Link to="/register" className="btn btn-primary px-4">Register</Link>
               </>
             )}
           </div>

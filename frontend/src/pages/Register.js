@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { gsap } from 'gsap';
+import AnimatedPage from '../components/AnimatedPage';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 
@@ -20,6 +22,17 @@ const Register = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    if (cardRef.current) {
+      gsap.fromTo(
+        cardRef.current,
+        { scale: 0.94, opacity: 0, y: 25 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }
+      );
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -45,21 +58,26 @@ const Register = () => {
   };
 
   return (
-    <div className="container py-5">
+    <AnimatedPage className="container py-5 my-md-3">
       <div className="row justify-content-center">
         <div className="col-lg-8">
-          <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
-            <div className="bg-primary text-white text-center p-4">
-              <i className="bi bi-person-plus display-4 text-warning"></i>
-              <h3 className="fw-bold mt-2">Join EduCycle Campus Community</h3>
-              <p className="small mb-0 opacity-75">Connect with peers to share books, tools, and skills</p>
+          <div ref={cardRef} className="glass-card overflow-hidden border-0 shadow-lg p-0">
+            <div className="text-white text-center p-4 p-md-5" style={{ background: 'var(--primary-gradient)' }}>
+              <div 
+                className="d-inline-flex align-items-center justify-content-center text-white rounded-circle shadow-sm mb-3"
+                style={{ width: '56px', height: '56px', background: 'rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(10px)' }}
+              >
+                <i className="bi bi-person-plus-fill fs-2"></i>
+              </div>
+              <h3 className="fw-extrabold mb-1" style={{ letterSpacing: '-0.02em' }}>Join EduCycle Campus Community</h3>
+              <p className="small mb-0 opacity-80">Connect with peers to share books, tools, and skills</p>
             </div>
 
             <div className="card-body p-4 p-md-5">
               <form onSubmit={handleSubmit}>
                 <div className="row g-3">
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold">First Name</label>
+                    <label className="form-label fw-semibold text-dark">First Name</label>
                     <input
                       type="text"
                       name="firstName"
@@ -71,7 +89,7 @@ const Register = () => {
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold">Last Name</label>
+                    <label className="form-label fw-semibold text-dark">Last Name</label>
                     <input
                       type="text"
                       name="lastName"
@@ -83,7 +101,7 @@ const Register = () => {
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold">Campus Email</label>
+                    <label className="form-label fw-semibold text-dark">Campus Email</label>
                     <input
                       type="email"
                       name="email"
@@ -96,7 +114,7 @@ const Register = () => {
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold">Phone Number</label>
+                    <label className="form-label fw-semibold text-dark">Phone Number</label>
                     <input
                       type="tel"
                       name="phone"
@@ -108,7 +126,7 @@ const Register = () => {
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold">College / University</label>
+                    <label className="form-label fw-semibold text-dark">College / University</label>
                     <input
                       type="text"
                       name="college"
@@ -120,7 +138,7 @@ const Register = () => {
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold">Department / Major</label>
+                    <label className="form-label fw-semibold text-dark">Department / Major</label>
                     <input
                       type="text"
                       name="department"
@@ -132,7 +150,7 @@ const Register = () => {
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold">Password</label>
+                    <label className="form-label fw-semibold text-dark">Password</label>
                     <input
                       type="password"
                       name="password"
@@ -145,7 +163,7 @@ const Register = () => {
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold">Confirm Password</label>
+                    <label className="form-label fw-semibold text-dark">Confirm Password</label>
                     <input
                       type="password"
                       name="confirmPassword"
@@ -157,7 +175,7 @@ const Register = () => {
                   </div>
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100 py-2.5 fw-bold mt-4" disabled={loading}>
+                <button type="submit" className="btn btn-primary w-100 py-3 fw-bold mt-4 shadow" disabled={loading}>
                   {loading ? (
                     <>
                       <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
@@ -169,9 +187,9 @@ const Register = () => {
                 </button>
               </form>
 
-              <hr className="my-4" />
+              <hr className="my-4 opacity-10" />
 
-              <div className="text-center small">
+              <div className="text-center small text-muted">
                 Already registered?{' '}
                 <Link to="/login" className="text-primary fw-bold text-decoration-none">
                   Sign In Here
@@ -181,7 +199,7 @@ const Register = () => {
           </div>
         </div>
       </div>
-    </div>
+    </AnimatedPage>
   );
 };
 

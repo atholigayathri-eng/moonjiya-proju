@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import AnimatedPage from '../components/AnimatedPage';
 import ResourceCard from '../components/ResourceCard';
 import SkillCard from '../components/SkillCard';
 import RequestModal from '../components/RequestModal';
@@ -8,6 +11,8 @@ import { skillService } from '../services/skillService';
 import { requestService } from '../services/requestService';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
@@ -20,6 +25,19 @@ const Home = () => {
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalType, setModalType] = useState(null);
+
+  const heroSectionRef = useRef(null);
+  const heroImageRef = useRef(null);
+  const heroBadgeRef = useRef(null);
+  const heroTitleRef = useRef(null);
+  const heroTextRef = useRef(null);
+  const heroBtnsRef = useRef(null);
+
+  const statsSectionRef = useRef(null);
+  const resourcesHeaderRef = useRef(null);
+  const resourcesGridRef = useRef(null);
+  const skillsHeaderRef = useRef(null);
+  const skillsGridRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,6 +56,146 @@ const Home = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Hero Load Entrance Timeline
+      const tl = gsap.timeline();
+      if (heroBadgeRef.current) {
+        tl.fromTo(heroBadgeRef.current, { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' });
+      }
+      if (heroTitleRef.current) {
+        tl.fromTo(heroTitleRef.current, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, "-=0.4");
+      }
+      if (heroTextRef.current) {
+        tl.fromTo(heroTextRef.current, { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, "-=0.4");
+      }
+      if (heroBtnsRef.current) {
+        tl.fromTo(heroBtnsRef.current, { y: 20, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.4)' }, "-=0.3");
+      }
+
+      // Parallax Hero Image on Scroll
+      if (heroImageRef.current && heroSectionRef.current) {
+        gsap.to(heroImageRef.current, {
+          yPercent: 15,
+          scale: 1.05,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroSectionRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+      }
+
+      // Stats Section ScrollTrigger Reveal
+      if (statsSectionRef.current) {
+        gsap.fromTo(
+          statsSectionRef.current.children,
+          { y: 50, opacity: 0, scale: 0.9 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.7,
+            stagger: 0.12,
+            ease: 'back.out(1.2)',
+            scrollTrigger: {
+              trigger: statsSectionRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      // Trending Resources Header ScrollTrigger Reveal
+      if (resourcesHeaderRef.current) {
+        gsap.fromTo(
+          resourcesHeaderRef.current,
+          { x: -40, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: resourcesHeaderRef.current,
+              start: 'top 85%',
+            },
+          }
+        );
+      }
+
+      // Featured Skills Header ScrollTrigger Reveal
+      if (skillsHeaderRef.current) {
+        gsap.fromTo(
+          skillsHeaderRef.current,
+          { x: 40, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: skillsHeaderRef.current,
+              start: 'top 85%',
+            },
+          }
+        );
+      }
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  // Trigger grid stagger when loaded and scrolled into view
+  useEffect(() => {
+    if (!loading) {
+      const ctx = gsap.context(() => {
+        if (resourcesGridRef.current) {
+          gsap.fromTo(
+            resourcesGridRef.current.children,
+            { y: 45, opacity: 0, scale: 0.95 },
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 0.65,
+              stagger: 0.12,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: resourcesGridRef.current,
+                start: 'top 85%',
+              },
+            }
+          );
+        }
+
+        if (skillsGridRef.current) {
+          gsap.fromTo(
+            skillsGridRef.current.children,
+            { y: 45, opacity: 0, scale: 0.95 },
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 0.65,
+              stagger: 0.12,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: skillsGridRef.current,
+                start: 'top 85%',
+              },
+            }
+          );
+        }
+      });
+
+      return () => ctx.revert();
+    }
+  }, [loading, resources, skills]);
 
   const handleRequestClick = (item, type) => {
     if (!isAuthenticated) {
@@ -62,79 +220,119 @@ const Home = () => {
   };
 
   return (
-    <div className="home-page">
-      {/* Hero Section */}
-      <section className="bg-gradient-primary text-white py-5 mb-5 rounded-bottom-4 shadow-sm">
-        <div className="container py-4">
-          <div className="row align-items-center g-4">
+    <AnimatedPage className="home-page pb-5">
+      {/* Flowing Minimal Hero Section */}
+      <section ref={heroSectionRef} className="py-5 mb-5 position-relative overflow-hidden">
+        <div className="container py-lg-4">
+          <div className="row align-items-center g-5">
             <div className="col-lg-7">
-              <span className="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">
-                🎓 Campus Collaborative Platform
+              <span ref={heroBadgeRef} className="badge-pill-accent mb-3 py-2 px-3 fs-6 shadow-sm">
+                <i className="bi bi-mortarboard-fill me-1"></i> Campus Peer Collaborative Platform
               </span>
-              <h1 className="display-4 fw-bold mb-3">
-                Share Resources, Exchange Skills & Grow Together
+              <h1 ref={heroTitleRef} className="display-4 fw-extrabold mb-3 text-dark" style={{ letterSpacing: '-0.03em', lineHeight: '1.15' }}>
+                Share Resources, <br />
+                <span style={{ background: 'var(--primary-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  Exchange Skills & Grow
+                </span>
               </h1>
-              <p className="lead mb-4 opacity-90">
-                EduCycle connects students within your institution to donate, lend, or swap academic resources and offer peer-to-peer tutoring seamlessly.
+              <p ref={heroTextRef} className="lead text-muted mb-4 pe-lg-4" style={{ lineHeight: '1.7' }}>
+                EduCycle connects students within your institution to donate, lend, or swap academic materials and offer peer-to-peer tutoring seamlessly.
               </p>
-              <div className="d-flex flex-wrap gap-3">
-                <Link to="/resources" className="btn btn-warning btn-lg fw-bold text-dark px-4 shadow">
-                  Browse Resources
+              <div ref={heroBtnsRef} className="d-flex flex-wrap gap-3">
+                <Link to="/resources" className="btn btn-primary btn-lg fw-bold px-4 py-3 shadow-lg d-flex align-items-center gap-2">
+                  <span>Browse Resources</span>
+                  <i className="bi bi-arrow-right fs-5"></i>
                 </Link>
-                <Link to="/skills" className="btn btn-outline-light btn-lg fw-semibold px-4">
-                  Explore Peer Skills
+                <Link to="/skills" className="btn btn-outline-primary btn-lg fw-bold px-4 py-3 d-flex align-items-center gap-2">
+                  <span>Explore Peer Skills</span>
+                  <i className="bi bi-compass fs-5"></i>
                 </Link>
               </div>
             </div>
-            <div className="col-lg-5 text-center">
-              <img
-                src="/photo.jpg"
-                alt="Students Collaboration"
-                className="img-fluid rounded-4 shadow-lg border border-3 border-white"
-              />
+
+            <div className="col-lg-5">
+              <div className="position-relative">
+                <div 
+                  className="position-absolute top-50 start-50 translate-middle w-100 h-100 rounded-circle"
+                  style={{ background: 'radial-gradient(circle, rgba(5,79,163,0.15) 0%, rgba(5,79,163,0) 70%)', filter: 'blur(30px)', zIndex: -1 }}
+                ></div>
+                <img
+                  ref={heroImageRef}
+                  src="/photo.jpg"
+                  alt="Students Collaboration"
+                  className="img-fluid rounded-4 shadow-lg border border-2 border-white"
+                  style={{ borderRadius: '28px' }}
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Counter Section */}
+      {/* Glass Stats Counter Section with ScrollTrigger */}
       <section className="container mb-5">
-        <div className="row g-3 text-center">
+        <div ref={statsSectionRef} className="row g-4 text-center">
           <div className="col-md-3 col-6">
-            <div className="p-3 bg-white rounded-3 shadow-sm border">
-              <h3 className="fw-bold text-primary mb-1">500+</h3>
-              <p className="text-muted small mb-0">Resources Shared</p>
+            <div className="glass-card p-4 h-100">
+              <div 
+                className="d-inline-flex align-items-center justify-content-center text-primary rounded-circle mb-2"
+                style={{ width: '48px', height: '48px', background: 'var(--primary-light)' }}
+              >
+                <i className="bi bi-box-seam-fill fs-4"></i>
+              </div>
+              <h3 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>500+</h3>
+              <p className="text-muted small mb-0 fw-semibold">Resources Shared</p>
             </div>
           </div>
           <div className="col-md-3 col-6">
-            <div className="p-3 bg-white rounded-3 shadow-sm border">
-              <h3 className="fw-bold text-success mb-1">320+</h3>
-              <p className="text-muted small mb-0">Skill Sessions</p>
+            <div className="glass-card p-4 h-100">
+              <div 
+                className="d-inline-flex align-items-center justify-content-center text-primary rounded-circle mb-2"
+                style={{ width: '48px', height: '48px', background: 'var(--primary-light)' }}
+              >
+                <i className="bi bi-people-fill fs-4"></i>
+              </div>
+              <h3 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>320+</h3>
+              <p className="text-muted small mb-0 fw-semibold">Skill Sessions</p>
             </div>
           </div>
           <div className="col-md-3 col-6">
-            <div className="p-3 bg-white rounded-3 shadow-sm border">
-              <h3 className="fw-bold text-info mb-1">1,200+</h3>
-              <p className="text-muted small mb-0">Active Students</p>
+            <div className="glass-card p-4 h-100">
+              <div 
+                className="d-inline-flex align-items-center justify-content-center text-primary rounded-circle mb-2"
+                style={{ width: '48px', height: '48px', background: 'var(--primary-light)' }}
+              >
+                <i className="bi bi-mortarboard-fill fs-4"></i>
+              </div>
+              <h3 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>1,200+</h3>
+              <p className="text-muted small mb-0 fw-semibold">Active Students</p>
             </div>
           </div>
           <div className="col-md-3 col-6">
-            <div className="p-3 bg-white rounded-3 shadow-sm border">
-              <h3 className="fw-bold text-warning mb-1">100%</h3>
-              <p className="text-muted small mb-0">Campus Sustainable</p>
+            <div className="glass-card p-4 h-100">
+              <div 
+                className="d-inline-flex align-items-center justify-content-center text-primary rounded-circle mb-2"
+                style={{ width: '48px', height: '48px', background: 'var(--primary-light)' }}
+              >
+                <i className="bi bi-tree-fill fs-4"></i>
+              </div>
+              <h3 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>100%</h3>
+              <p className="text-muted small mb-0 fw-semibold">Sustainable Exchange</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trending Resources */}
+      {/* Trending Resources with ScrollTrigger */}
       <section className="container mb-5">
-        <div className="d-flex justify-content-between align-items-end mb-4">
+        <div ref={resourcesHeaderRef} className="d-flex justify-content-between align-items-end mb-4">
           <div>
-            <span className="text-primary fw-bold text-uppercase small">Academic Marketplace</span>
-            <h2 className="fw-bold mb-0">Trending Resources</h2>
+            <span className="badge-pill-accent mb-2">
+              <i className="bi bi-award-fill me-1"></i> Academic Marketplace
+            </span>
+            <h2 className="fw-extrabold mb-0 text-dark" style={{ letterSpacing: '-0.02em' }}>Trending Resources</h2>
           </div>
-          <Link to="/resources" className="btn btn-outline-primary fw-semibold">
+          <Link to="/resources" className="btn btn-outline-primary fw-bold px-4">
             View All <i className="bi bi-arrow-right ms-1"></i>
           </Link>
         </div>
@@ -144,7 +342,7 @@ const Home = () => {
             <div className="spinner-border text-primary" role="status"></div>
           </div>
         ) : (
-          <div className="row g-4">
+          <div ref={resourcesGridRef} className="row g-4">
             {resources.length > 0 ? (
               resources.slice(0, 4).map((item) => (
                 <div className="col-lg-3 col-md-6" key={item.id || item.resourceId}>
@@ -152,30 +350,32 @@ const Home = () => {
                 </div>
               ))
             ) : (
-              <div className="col-12 text-center text-muted py-4">No resources available at the moment.</div>
+              <div className="col-12 text-center text-muted py-5 glass-card">No resources available at the moment.</div>
             )}
           </div>
         )}
       </section>
 
-      {/* Featured Skills */}
+      {/* Featured Skills with ScrollTrigger */}
       <section className="container mb-5">
-        <div className="d-flex justify-content-between align-items-end mb-4">
+        <div ref={skillsHeaderRef} className="d-flex justify-content-between align-items-end mb-4">
           <div>
-            <span className="text-success fw-bold text-uppercase small">Peer Learning</span>
-            <h2 className="fw-bold mb-0">Featured Skills This Week</h2>
+            <span className="badge-pill-accent mb-2">
+              <i className="bi bi-lightning-charge-fill me-1"></i> Peer Learning
+            </span>
+            <h2 className="fw-extrabold mb-0 text-dark" style={{ letterSpacing: '-0.02em' }}>Featured Peer Skills</h2>
           </div>
-          <Link to="/skills" className="btn btn-outline-success fw-semibold">
-            Explore All Skills <i className="bi bi-arrow-right ms-1"></i>
+          <Link to="/skills" className="btn btn-outline-primary fw-bold px-4">
+            Explore All <i className="bi bi-arrow-right ms-1"></i>
           </Link>
         </div>
 
         {loading ? (
           <div className="text-center py-5">
-            <div className="spinner-border text-success" role="status"></div>
+            <div className="spinner-border text-primary" role="status"></div>
           </div>
         ) : (
-          <div className="row g-4">
+          <div ref={skillsGridRef} className="row g-4">
             {skills.length > 0 ? (
               skills.slice(0, 4).map((skill) => (
                 <div className="col-lg-3 col-md-6" key={skill.id || skill.skillId}>
@@ -183,7 +383,7 @@ const Home = () => {
                 </div>
               ))
             ) : (
-              <div className="col-12 text-center text-muted py-4">No skill offers available right now.</div>
+              <div className="col-12 text-center text-muted py-5 glass-card">No skill offers available right now.</div>
             )}
           </div>
         )}
@@ -196,7 +396,7 @@ const Home = () => {
         type={modalType}
         onSubmit={handleModalSubmit}
       />
-    </div>
+    </AnimatedPage>
   );
 };
 

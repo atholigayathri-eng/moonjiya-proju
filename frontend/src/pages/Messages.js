@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AnimatedPage from '../components/AnimatedPage';
 import MessageBox from '../components/MessageBox';
 import { requestService } from '../services/requestService';
 import { messageService } from '../services/miscServices';
@@ -19,7 +20,6 @@ const Messages = () => {
           requestService.getMyIncomingRequests(),
           requestService.getMySentRequests()
         ]);
-        // Filter only accepted requests (matches)
         const acceptedInc = (inc || []).filter(r => r.status === 'ACCEPTED').map(r => ({
           requestId: r.id,
           peerName: r.requesterName || 'Student Peer',
@@ -99,18 +99,18 @@ const Messages = () => {
   };
 
   return (
-    <div className="container py-4">
-      <h2 className="fw-bold mb-4 d-none d-md-block">In-App Campus Messaging</h2>
-      <div className="row g-0 g-md-4" style={{ height: 'calc(100vh - 140px)', minHeight: '500px' }}>
+    <AnimatedPage className="container py-5">
+      <h2 className="fw-extrabold text-dark mb-4 d-none d-md-block" style={{ letterSpacing: '-0.02em' }}>In-App Campus Messaging</h2>
+      <div className="row g-0 g-md-4" style={{ height: 'calc(100vh - 180px)', minHeight: '520px' }}>
         {/* Contacts Sidebar */}
         <div className={`col-md-4 h-100 ${activeMatch ? 'd-none d-md-block' : 'd-block'}`}>
-          <div className="card h-100 border-0 shadow-sm">
-            <div className="card-header bg-white fw-bold py-3 border-bottom">
-              <i className="bi bi-people me-2 text-primary"></i>Accepted Matches
+          <div className="glass-card h-100 p-0 overflow-hidden d-flex flex-column">
+            <div className="p-4 bg-white bg-opacity-60 border-bottom border-subtle fw-bold text-dark">
+              <i className="bi bi-people-fill me-2 text-primary"></i>Accepted Matches ({matches.length})
             </div>
-            <div className="card-body p-0 overflow-auto">
+            <div className="card-body p-0 overflow-auto flex-grow-1">
               {loading ? (
-                <div className="text-center py-4">
+                <div className="text-center py-5">
                   <div className="spinner-border spinner-border-sm text-primary"></div>
                 </div>
               ) : matches.length > 0 ? (
@@ -118,17 +118,24 @@ const Messages = () => {
                   {matches.map((match, idx) => (
                     <button
                       key={idx}
-                      className={`list-group-item list-group-item-action p-3 border-bottom text-start ${
-                        activeMatch?.requestId === match.requestId ? 'active bg-primary-subtle border-primary' : ''
+                      className={`list-group-item list-group-item-action p-3.5 border-bottom border-subtle text-start transition-hover ${
+                        activeMatch?.requestId === match.requestId ? 'bg-primary-subtle' : ''
                       }`}
+                      style={{
+                        backgroundColor: activeMatch?.requestId === match.requestId ? 'var(--primary-light)' : 'transparent',
+                        borderLeft: activeMatch?.requestId === match.requestId ? '4px solid var(--primary-color)' : 'none'
+                      }}
                       onClick={() => setActiveMatch(match)}
                     >
                       <div className="d-flex align-items-center gap-3">
-                        <div className="avatar-circle bg-primary text-white fw-bold rounded-circle d-flex align-items-center justify-content-center" style={{ width: '36px', height: '36px' }}>
+                        <div 
+                          className="avatar-circle text-white fw-bold rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                          style={{ width: '40px', height: '40px', background: 'var(--primary-gradient)' }}
+                        >
                           {match.peerName.charAt(0).toUpperCase()}
                         </div>
                         <div className="overflow-hidden">
-                          <h6 className="fw-bold mb-0 text-truncate">{match.peerName}</h6>
+                          <h6 className="fw-bold mb-0 text-dark text-truncate">{match.peerName}</h6>
                           <small className="text-muted text-truncate d-block">{match.title}</small>
                         </div>
                       </div>
@@ -154,7 +161,7 @@ const Messages = () => {
           />
         </div>
       </div>
-    </div>
+    </AnimatedPage>
   );
 };
 

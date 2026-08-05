@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AnimatedPage from '../components/AnimatedPage';
 import { useAuth } from '../context/AuthContext';
 import { userService } from '../services/userService';
 import { useNotification } from '../context/NotificationContext';
@@ -28,9 +29,8 @@ const Profile = () => {
     }
   }, [user]);
 
-  // Keep ratings in state for future rating display expansion
   if (ratings.length > 0) {
-    // console.log("Ratings:", ratings.length);
+    // Keep reference
   }
 
   const handleChange = (e) => {
@@ -52,28 +52,32 @@ const Profile = () => {
   };
 
   return (
-    <div className="container py-4">
+    <AnimatedPage className="container py-5">
       <div className="row g-4">
         {/* Profile Card */}
         <div className="col-lg-4">
-          <div className="card border-0 shadow-sm text-center p-4">
-            <div className="mx-auto bg-primary text-white display-4 fw-bold rounded-circle d-flex align-items-center justify-content-center mb-3" style={{ width: '90px', height: '90px' }}>
+          <div className="glass-card text-center p-4 p-md-5">
+            <div 
+              className="mx-auto text-white display-5 fw-bold rounded-circle d-flex align-items-center justify-content-center mb-3 shadow"
+              style={{ width: '96px', height: '96px', background: 'var(--primary-gradient)' }}
+            >
               {user?.firstName ? user.firstName.charAt(0).toUpperCase() : 'U'}
             </div>
-            <h4 className="fw-bold mb-1">{user?.firstName} {user?.lastName}</h4>
-            <p className="text-secondary small mb-2">{user?.email}</p>
-            <span className="badge bg-primary-subtle text-primary border border-primary px-3 py-2 rounded-pill mx-auto mb-3">
+            <h4 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>{user?.firstName} {user?.lastName}</h4>
+            <p className="text-muted small mb-3">{user?.email}</p>
+            <span className="badge-pill-accent mb-4">
+              <i className="bi bi-mortarboard-fill me-1"></i>
               {user?.department || 'Student Member'}
             </span>
 
-            <div className="border-top pt-3 mt-2 text-start small">
+            <div className="border-top border-subtle pt-4 text-start small">
               <div className="d-flex justify-content-between mb-2">
                 <span className="text-muted">College:</span>
-                <span className="fw-semibold">{user?.college || 'N/A'}</span>
+                <span className="fw-bold text-dark">{user?.college || 'N/A'}</span>
               </div>
               <div className="d-flex justify-content-between mb-2">
                 <span className="text-muted">Phone:</span>
-                <span className="fw-semibold">{user?.phone || 'N/A'}</span>
+                <span className="fw-bold text-dark">{user?.phone || 'N/A'}</span>
               </div>
               <div className="d-flex justify-content-between">
                 <span className="text-muted">Community Rating:</span>
@@ -87,12 +91,12 @@ const Profile = () => {
 
         {/* Edit Form */}
         <div className="col-lg-8">
-          <div className="card border-0 shadow-sm p-4">
-            <h4 className="fw-bold mb-4">Edit Student Profile</h4>
+          <div className="glass-card p-4 p-md-5">
+            <h4 className="fw-extrabold text-dark mb-4" style={{ letterSpacing: '-0.02em' }}>Edit Student Profile</h4>
             <form onSubmit={handleSubmit}>
               <div className="row g-3">
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">First Name</label>
+                  <label className="form-label fw-semibold text-dark">First Name</label>
                   <input
                     type="text"
                     name="firstName"
@@ -102,7 +106,7 @@ const Profile = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">Last Name</label>
+                  <label className="form-label fw-semibold text-dark">Last Name</label>
                   <input
                     type="text"
                     name="lastName"
@@ -112,17 +116,17 @@ const Profile = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">Campus Email</label>
+                  <label className="form-label fw-semibold text-dark">Campus Email</label>
                   <input
                     type="email"
                     name="email"
-                    className="form-control"
+                    className="form-control opacity-75"
                     disabled
                     value={formData.email}
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">Phone Number</label>
+                  <label className="form-label fw-semibold text-dark">Phone Number</label>
                   <input
                     type="tel"
                     name="phone"
@@ -132,7 +136,7 @@ const Profile = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">College / Institution</label>
+                  <label className="form-label fw-semibold text-dark">College / Institution</label>
                   <input
                     type="text"
                     name="college"
@@ -142,7 +146,7 @@ const Profile = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">Department</label>
+                  <label className="form-label fw-semibold text-dark">Department</label>
                   <input
                     type="text"
                     name="department"
@@ -152,7 +156,7 @@ const Profile = () => {
                   />
                 </div>
                 <div className="col-12">
-                  <label className="form-label fw-semibold">Bio / Academic Interests</label>
+                  <label className="form-label fw-semibold text-dark">Bio / Academic Interests</label>
                   <textarea
                     name="bio"
                     className="form-control"
@@ -164,14 +168,14 @@ const Profile = () => {
                 </div>
               </div>
 
-              <button type="submit" className="btn btn-primary fw-bold px-4 mt-4" disabled={loading}>
+              <button type="submit" className="btn btn-primary fw-bold px-4 py-2.5 mt-4 shadow" disabled={loading}>
                 {loading ? 'Saving Changes...' : 'Save Profile Changes'}
               </button>
             </form>
           </div>
         </div>
       </div>
-    </div>
+    </AnimatedPage>
   );
 };
 

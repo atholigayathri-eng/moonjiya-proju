@@ -7,6 +7,7 @@ import './css/index.css';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 
+import FlowingBackground from './components/FlowingBackground';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -33,7 +34,8 @@ function App() {
     <AuthProvider>
       <NotificationProvider>
         <Router>
-          <div className="d-flex flex-column min-vh-100">
+          <div className="d-flex flex-column min-vh-100 position-relative">
+            <FlowingBackground />
             <Navbar />
             <main className="flex-grow-1">
               <Routes>

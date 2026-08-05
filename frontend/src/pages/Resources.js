@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import AnimatedPage from '../components/AnimatedPage';
 import ResourceCard from '../components/ResourceCard';
 import RequestModal from '../components/RequestModal';
 import { resourceService } from '../services/resourceService';
 import { requestService } from '../services/requestService';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Resources = () => {
   const { user, isAuthenticated } = useAuth();
@@ -19,6 +24,9 @@ const Resources = () => {
   // Modal State
   const [selectedResource, setSelectedResource] = useState(null);
   const [showPostModal, setShowPostModal] = useState(false);
+
+  const filterRef = useRef(null);
+  const gridRef = useRef(null);
 
   // New Resource Form
   const [newResource, setNewResource] = useState({
@@ -49,6 +57,43 @@ const Resources = () => {
     fetchResources();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, exchangeType]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (filterRef.current) {
+        gsap.fromTo(
+          filterRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
+        );
+      }
+    });
+    return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    if (!loading && gridRef.current) {
+      const ctx = gsap.context(() => {
+        gsap.fromTo(
+          gridRef.current.children,
+          { y: 50, opacity: 0, scale: 0.95 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: gridRef.current,
+              start: 'top 85%',
+            },
+          }
+        );
+      });
+      return () => ctx.revert();
+    }
+  }, [loading, resources]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -87,28 +132,32 @@ const Resources = () => {
   };
 
   return (
-    <div className="container py-4">
+    <AnimatedPage className="container py-5">
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-          <h2 className="fw-bold mb-1">Academic Resources Exchange</h2>
-          <p className="text-secondary mb-0">Browse textbooks, lab equipment, notes, and components posted by campus peers</p>
+          <span className="badge-pill-accent mb-2">
+            <i className="bi bi-box-seam-fill me-1"></i> Academic Marketplace
+          </span>
+          <h2 className="fw-extrabold mb-1 text-dark" style={{ letterSpacing: '-0.02em' }}>Academic Resources Exchange</h2>
+          <p className="text-muted mb-0">Browse textbooks, lab equipment, notes, and components posted by campus peers</p>
         </div>
         {isAuthenticated && (
-          <button className="btn btn-primary fw-bold px-4" onClick={() => setShowPostModal(true)}>
-            <i className="bi bi-plus-lg me-2"></i>Post a Resource
+          <button className="btn btn-primary fw-bold px-4 py-2.5 d-flex align-items-center gap-2" onClick={() => setShowPostModal(true)}>
+            <i className="bi bi-plus-circle-fill fs-5"></i>
+            <span>Post a Resource</span>
           </button>
         )}
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="card border-0 shadow-sm p-3 mb-4">
+      <div ref={filterRef} className="glass-card p-4 mb-5">
         <form onSubmit={handleSearchSubmit} className="row g-3 align-items-center">
           <div className="col-md-5">
             <div className="input-group">
-              <span className="input-group-text bg-white border-end-0"><i className="bi bi-search text-muted"></i></span>
+              <span className="input-group-text"><i className="bi bi-search"></i></span>
               <input
                 type="text"
-                className="form-control border-start-0"
+                className="form-control"
                 placeholder="Search by title, subject, or keywords..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -132,7 +181,9 @@ const Resources = () => {
             </select>
           </div>
           <div className="col-md-1">
-            <button type="submit" className="btn btn-secondary w-100 fw-semibold">Go</button>
+            <button type="submit" className="btn btn-primary w-100 fw-bold">
+              <i className="bi bi-search"></i>
+            </button>
           </div>
         </form>
       </div>
@@ -143,7 +194,7 @@ const Resources = () => {
           <div className="spinner-border text-primary" role="status"></div>
         </div>
       ) : (
-        <div className="row g-4">
+        <div ref={gridRef} className="row g-4">
           {resources.length > 0 ? (
             resources.map((item) => (
               <div className="col-lg-3 col-md-6" key={item.id || item.resourceId}>
@@ -151,9 +202,9 @@ const Resources = () => {
               </div>
             ))
           ) : (
-            <div className="col-12 text-center py-5 bg-light rounded-3 border">
-              <i className="bi bi-box-seam display-4 text-muted d-block mb-3"></i>
-              <h5>No resources found</h5>
+            <div className="col-12 text-center py-5 glass-card">
+              <i className="bi bi-box-seam display-4 text-primary opacity-50 d-block mb-3"></i>
+              <h5 className="fw-bold text-dark">No resources found</h5>
               <p className="text-muted small">Try tweaking your search keywords or category filters.</p>
             </div>
           )}
@@ -162,18 +213,20 @@ const Resources = () => {
 
       {/* Modal to Post New Resource */}
       {showPostModal && (
-        <div className="modal show d-block tab-modal-backdrop" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(3, 27, 56, 0.55)', backdropFilter: 'blur(8px)' }}>
           <div className="modal-dialog modal-lg modal-dialog-centered">
-            <div className="modal-content shadow border-0">
-              <div className="modal-header bg-primary text-white">
-                <h5 className="modal-title fw-bold"><i className="bi bi-plus-circle me-2"></i>Post Academic Resource</h5>
-                <button type="button" className="btn-close btn-close-white" onClick={() => setShowPostModal(false)}></button>
+            <div className="modal-content glass-card overflow-hidden p-0 border-0">
+              <div className="modal-header text-white p-4" style={{ background: 'var(--primary-gradient)' }}>
+                <h5 className="modal-title fw-bold d-flex align-items-center gap-2">
+                  <i className="bi bi-plus-circle-fill fs-4"></i>Post Academic Resource
+                </h5>
+                <button type="button" className="btn-close btn-close-white shadow-none" onClick={() => setShowPostModal(false)}></button>
               </div>
               <form onSubmit={handlePostSubmit}>
-                <div className="modal-body">
+                <div className="modal-body p-4">
                   <div className="row g-3">
                     <div className="col-md-8">
-                      <label className="form-label fw-semibold">Resource Title</label>
+                      <label className="form-label fw-semibold text-dark">Resource Title</label>
                       <input
                         type="text"
                         className="form-control"
@@ -184,7 +237,7 @@ const Resources = () => {
                       />
                     </div>
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Category</label>
+                      <label className="form-label fw-semibold text-dark">Category</label>
                       <select
                         className="form-select"
                         value={newResource.category}
@@ -197,7 +250,7 @@ const Resources = () => {
                     </div>
 
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Condition</label>
+                      <label className="form-label fw-semibold text-dark">Condition</label>
                       <select
                         className="form-select"
                         value={newResource.condition}
@@ -210,7 +263,7 @@ const Resources = () => {
                     </div>
 
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Exchange Type</label>
+                      <label className="form-label fw-semibold text-dark">Exchange Type</label>
                       <select
                         className="form-select"
                         value={newResource.exchangeType}
@@ -223,7 +276,7 @@ const Resources = () => {
                     </div>
 
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Quantity</label>
+                      <label className="form-label fw-semibold text-dark">Quantity</label>
                       <input
                         type="number"
                         min="1"
@@ -234,7 +287,7 @@ const Resources = () => {
                     </div>
 
                     <div className="col-12">
-                      <label className="form-label fw-semibold">Image URL (Optional)</label>
+                      <label className="form-label fw-semibold text-dark">Image URL (Optional)</label>
                       <input
                         type="url"
                         className="form-control"
@@ -245,7 +298,7 @@ const Resources = () => {
                     </div>
 
                     <div className="col-12">
-                      <label className="form-label fw-semibold">Description & Pickup Details</label>
+                      <label className="form-label fw-semibold text-dark">Description & Pickup Details</label>
                       <textarea
                         className="form-control"
                         rows="4"
@@ -258,9 +311,9 @@ const Resources = () => {
                   </div>
                 </div>
 
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowPostModal(false)}>Cancel</button>
-                  <button type="submit" className="btn btn-primary fw-bold">Publish Listing</button>
+                <div className="modal-footer p-4 pt-0 border-0">
+                  <button type="button" className="btn btn-light px-4" onClick={() => setShowPostModal(false)}>Cancel</button>
+                  <button type="submit" className="btn btn-primary px-4 fw-bold">Publish Listing</button>
                 </div>
               </form>
             </div>
@@ -276,7 +329,7 @@ const Resources = () => {
         type="resource"
         onSubmit={handleRequestSubmit}
       />
-    </div>
+    </AnimatedPage>
   );
 };
 

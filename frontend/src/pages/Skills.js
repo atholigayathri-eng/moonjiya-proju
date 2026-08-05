@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import AnimatedPage from '../components/AnimatedPage';
 import SkillCard from '../components/SkillCard';
 import RequestModal from '../components/RequestModal';
 import { skillService } from '../services/skillService';
 import { requestService } from '../services/requestService';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Skills = () => {
   const { user, isAuthenticated } = useAuth();
@@ -19,6 +24,9 @@ const Skills = () => {
   // Modal State
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [showPostModal, setShowPostModal] = useState(false);
+
+  const filterRef = useRef(null);
+  const gridRef = useRef(null);
 
   // New Skill Form
   const [newSkill, setNewSkill] = useState({
@@ -48,6 +56,43 @@ const Skills = () => {
     fetchSkills();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, level]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (filterRef.current) {
+        gsap.fromTo(
+          filterRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
+        );
+      }
+    });
+    return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    if (!loading && gridRef.current) {
+      const ctx = gsap.context(() => {
+        gsap.fromTo(
+          gridRef.current.children,
+          { y: 50, opacity: 0, scale: 0.95 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: gridRef.current,
+              start: 'top 85%',
+            },
+          }
+        );
+      });
+      return () => ctx.revert();
+    }
+  }, [loading, skills]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -85,28 +130,32 @@ const Skills = () => {
   };
 
   return (
-    <div className="container py-4">
+    <AnimatedPage className="container py-5">
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-          <h2 className="fw-bold mb-1">Peer Skill Exchange</h2>
-          <p className="text-secondary mb-0">Learn programming, mathematics, foreign languages, and design from fellow students</p>
+          <span className="badge-pill-accent mb-2">
+            <i className="bi bi-mortarboard-fill me-1"></i> Peer Learning
+          </span>
+          <h2 className="fw-extrabold mb-1 text-dark" style={{ letterSpacing: '-0.02em' }}>Peer Skill Exchange</h2>
+          <p className="text-muted mb-0">Learn programming, mathematics, foreign languages, and design from fellow students</p>
         </div>
         {isAuthenticated && (
-          <button className="btn btn-success fw-bold px-4" onClick={() => setShowPostModal(true)}>
-            <i className="bi bi-plus-lg me-2"></i>Offer a Skill
+          <button className="btn btn-primary fw-bold px-4 py-2.5 d-flex align-items-center gap-2" onClick={() => setShowPostModal(true)}>
+            <i className="bi bi-plus-circle-fill fs-5"></i>
+            <span>Offer a Skill</span>
           </button>
         )}
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="card border-0 shadow-sm p-3 mb-4">
+      <div ref={filterRef} className="glass-card p-4 mb-5">
         <form onSubmit={handleSearchSubmit} className="row g-3 align-items-center">
           <div className="col-md-5">
             <div className="input-group">
-              <span className="input-group-text bg-white border-end-0"><i className="bi bi-search text-muted"></i></span>
+              <span className="input-group-text"><i className="bi bi-search"></i></span>
               <input
                 type="text"
-                className="form-control border-start-0"
+                className="form-control"
                 placeholder="Search by skill name, tech stack, language..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -130,7 +179,9 @@ const Skills = () => {
             </select>
           </div>
           <div className="col-md-1">
-            <button type="submit" className="btn btn-secondary w-100 fw-semibold">Go</button>
+            <button type="submit" className="btn btn-primary w-100 fw-bold">
+              <i className="bi bi-search"></i>
+            </button>
           </div>
         </form>
       </div>
@@ -138,10 +189,10 @@ const Skills = () => {
       {/* Skills Grid */}
       {loading ? (
         <div className="text-center py-5">
-          <div className="spinner-border text-success" role="status"></div>
+          <div className="spinner-border text-primary" role="status"></div>
         </div>
       ) : (
-        <div className="row g-4">
+        <div ref={gridRef} className="row g-4">
           {skills.length > 0 ? (
             skills.map((skill) => (
               <div className="col-lg-3 col-md-6" key={skill.id || skill.skillId}>
@@ -149,9 +200,9 @@ const Skills = () => {
               </div>
             ))
           ) : (
-            <div className="col-12 text-center py-5 bg-light rounded-3 border">
-              <i className="bi bi-mortarboard display-4 text-muted d-block mb-3"></i>
-              <h5>No skills found</h5>
+            <div className="col-12 text-center py-5 glass-card">
+              <i className="bi bi-mortarboard display-4 text-primary opacity-50 d-block mb-3"></i>
+              <h5 className="fw-bold text-dark">No skills found</h5>
               <p className="text-muted small">Be the first student to offer a skill in this category!</p>
             </div>
           )}
@@ -160,18 +211,20 @@ const Skills = () => {
 
       {/* Modal to Post New Skill */}
       {showPostModal && (
-        <div className="modal show d-block tab-modal-backdrop" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(3, 27, 56, 0.55)', backdropFilter: 'blur(8px)' }}>
           <div className="modal-dialog modal-lg modal-dialog-centered">
-            <div className="modal-content shadow border-0">
-              <div className="modal-header bg-success text-white">
-                <h5 className="modal-title fw-bold"><i className="bi bi-mortarboard me-2"></i>Offer a Skill to Peers</h5>
-                <button type="button" className="btn-close btn-close-white" onClick={() => setShowPostModal(false)}></button>
+            <div className="modal-content glass-card overflow-hidden p-0 border-0">
+              <div className="modal-header text-white p-4" style={{ background: 'var(--primary-gradient)' }}>
+                <h5 className="modal-title fw-bold d-flex align-items-center gap-2">
+                  <i className="bi bi-mortarboard-fill fs-4"></i>Offer a Skill to Peers
+                </h5>
+                <button type="button" className="btn-close btn-close-white shadow-none" onClick={() => setShowPostModal(false)}></button>
               </div>
               <form onSubmit={handlePostSubmit}>
-                <div className="modal-body">
+                <div className="modal-body p-4">
                   <div className="row g-3">
                     <div className="col-md-8">
-                      <label className="form-label fw-semibold">Skill / Subject Name</label>
+                      <label className="form-label fw-semibold text-dark">Skill / Subject Name</label>
                       <input
                         type="text"
                         className="form-control"
@@ -182,7 +235,7 @@ const Skills = () => {
                       />
                     </div>
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Category</label>
+                      <label className="form-label fw-semibold text-dark">Category</label>
                       <select
                         className="form-select"
                         value={newSkill.category}
@@ -195,7 +248,7 @@ const Skills = () => {
                     </div>
 
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Expertise Level</label>
+                      <label className="form-label fw-semibold text-dark">Expertise Level</label>
                       <select
                         className="form-select"
                         value={newSkill.level}
@@ -208,7 +261,7 @@ const Skills = () => {
                     </div>
 
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Teaching Format</label>
+                      <label className="form-label fw-semibold text-dark">Teaching Format</label>
                       <select
                         className="form-select"
                         value={newSkill.teachingMethod}
@@ -221,7 +274,7 @@ const Skills = () => {
                     </div>
 
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Weekly Availability</label>
+                      <label className="form-label fw-semibold text-dark">Weekly Availability</label>
                       <input
                         type="text"
                         className="form-control"
@@ -232,7 +285,7 @@ const Skills = () => {
                     </div>
 
                     <div className="col-12">
-                      <label className="form-label fw-semibold">Description & Teaching Overview</label>
+                      <label className="form-label fw-semibold text-dark">Description & Teaching Overview</label>
                       <textarea
                         className="form-control"
                         rows="4"
@@ -245,9 +298,9 @@ const Skills = () => {
                   </div>
                 </div>
 
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowPostModal(false)}>Cancel</button>
-                  <button type="submit" className="btn btn-success fw-bold">Publish Skill Offer</button>
+                <div className="modal-footer p-4 pt-0 border-0">
+                  <button type="button" className="btn btn-light px-4" onClick={() => setShowPostModal(false)}>Cancel</button>
+                  <button type="submit" className="btn btn-primary px-4 fw-bold">Publish Skill Offer</button>
                 </div>
               </form>
             </div>
@@ -263,7 +316,7 @@ const Skills = () => {
         type="skill"
         onSubmit={handleRequestSubmit}
       />
-    </div>
+    </AnimatedPage>
   );
 };
 
