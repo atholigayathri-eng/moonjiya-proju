@@ -30,7 +30,7 @@ public class ResourceService {
             }
             return new java.util.ArrayList<>();
         }
-        return resourceRepository.findAll();
+        return resourceRepository.findByApprovedTrue();
     }
 
     public Optional<Resource> getResourceById(Long id) {
@@ -44,6 +44,8 @@ public class ResourceService {
         r.setCategory(dto.getCategory());
         r.setQuantity(dto.getQuantity() != null ? dto.getQuantity() : 1);
         r.setImageUrl(dto.getImageUrl());
+        r.setApproved(false);
+        r.setApprovalStatus("PENDING");
 
         if (dto.getExchangeType() != null) {
             try {

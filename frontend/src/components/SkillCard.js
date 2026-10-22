@@ -38,6 +38,22 @@ const SkillCard = ({ skill, onRequest }) => {
       className="card glass-card h-100 border-0 d-flex flex-column"
     >
       <div className="card-body d-flex flex-column p-4 flex-grow-1">
+        {skill.approvalStatus && skill.approvalStatus !== 'APPROVED' && (
+          <div className="mb-2">
+            <span 
+              className={`badge px-2.5 py-1.5 fw-bold ${
+                skill.approvalStatus === 'REJECTED' 
+                  ? 'bg-danger bg-opacity-15 text-danger border border-danger border-opacity-25' 
+                  : 'bg-warning bg-opacity-20 text-warning-emphasis border border-warning border-opacity-50'
+              }`}
+              style={{ fontSize: '0.72rem' }}
+            >
+              <i className={`bi ${skill.approvalStatus === 'REJECTED' ? 'bi-x-circle-fill' : 'bi-hourglass-split'} me-1`}></i>
+              {skill.approvalStatus === 'REJECTED' ? 'Rejected by Admin' : 'Pending Admin Approval'}
+            </span>
+          </div>
+        )}
+
         {/* Category & Level Badges Row */}
         <div className="d-flex justify-content-between align-items-center mb-3 gap-2" style={{ minHeight: '30px' }}>
           <span className="badge-pill-accent text-truncate" style={{ maxWidth: '68%' }} title={skill.category || 'Skill'}>

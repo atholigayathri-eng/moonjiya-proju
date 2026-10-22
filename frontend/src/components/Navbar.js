@@ -111,6 +111,13 @@ const Navbar = () => {
                       <i className="bi bi-speedometer2 text-primary me-2"></i>Dashboard
                     </Link>
                   </li>
+                  {user && user.role === 'ADMIN' && (
+                    <li>
+                      <Link className="dropdown-item rounded-3 py-2 fw-bold text-danger" to="/admin">
+                        <i className="bi bi-shield-lock-fill me-2"></i>Admin Panel
+                      </Link>
+                    </li>
+                  )}
                   <li><hr className="dropdown-divider opacity-10" /></li>
                   <li>
                     <button className="dropdown-item rounded-3 py-2 fw-medium text-danger" onClick={handleLogout}>
@@ -121,8 +128,11 @@ const Navbar = () => {
               </div>
             ) : (
               <>
-                <Link to="/login" className="btn btn-outline-primary px-4">Login</Link>
-                <Link to="/register" className="btn btn-primary px-4">Register</Link>
+                <Link to="/login" className="btn btn-outline-primary px-3">Login</Link>
+                <Link to="/register" className="btn btn-primary px-3">Register</Link>
+                <Link to="/admin" className="btn btn-outline-secondary px-2.5 py-1.5 text-nowrap" title="Admin Portal Login">
+                  <i className="bi bi-shield-lock me-1"></i>Admin
+                </Link>
               </>
             )}
           </div>

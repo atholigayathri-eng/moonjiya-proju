@@ -28,6 +28,7 @@ const Footer = () => {
               <li><Link to="/resources" className="text-white-50 text-decoration-none hover-white">Academic Resources</Link></li>
               <li><Link to="/skills" className="text-white-50 text-decoration-none hover-white">Peer Skills</Link></li>
               <li><Link to="/dashboard" className="text-white-50 text-decoration-none hover-white">Dashboard</Link></li>
+              <li><Link to="/admin" className="text-white-50 text-decoration-none hover-white"><i className="bi bi-shield-lock me-1"></i>Admin Portal</Link></li>
             </ul>
           </div>
 

@@ -17,4 +17,9 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> {
     List<Resource> findByExchangeType(ExchangeType exchangeType);
     List<Resource> findByTitleContainingIgnoreCase(String keyword);
     List<Resource> findByCategoryAndExchangeType(String category, ExchangeType exchangeType);
+    List<Resource> findByApprovedTrue();
+    List<Resource> findByApproved(Boolean approved);
+    List<Resource> findByApprovalStatus(String approvalStatus);
+    long countByApproved(Boolean approved);
+    long countByApprovalStatus(String approvalStatus);
 }

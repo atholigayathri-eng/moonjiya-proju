@@ -44,7 +44,15 @@ const Skills = () => {
     setLoading(true);
     try {
       const data = await skillService.getAll({ category, level, search });
-      setSkills(data.content || data || []);
+      const raw = data.content || data || [];
+      // Strictly show only approved skills in public directory
+      const approvedOnly = raw.filter(item => {
+        if (item.approvalStatus) {
+          return item.approvalStatus === 'APPROVED';
+        }
+        return item.approved !== false;
+      });
+      setSkills(approvedOnly);
     } catch (err) {
       showError("Failed to fetch skill offerings.");
     } finally {
@@ -104,7 +112,7 @@ const Skills = () => {
     try {
       const userId = user?.userId || user?.id;
       await skillService.create({ ...newSkill, userId });
-      showSuccess("Skill offer created successfully!");
+      showSuccess("Skill offer submitted! It will be visible in the directory after Admin approval.");
       setShowPostModal(false);
       setNewSkill({
         skillName: '',
@@ -298,9 +306,15 @@ const Skills = () => {
                   </div>
                 </div>
 
-                <div className="modal-footer p-4 pt-0 border-0">
-                  <button type="button" className="btn btn-light px-4" onClick={() => setShowPostModal(false)}>Cancel</button>
-                  <button type="submit" className="btn btn-primary px-4 fw-bold">Publish Skill Offer</button>
+                <div className="modal-footer p-4 pt-0 border-0 flex-column align-items-stretch gap-2">
+                  <div className="alert alert-info border-0 p-2.5 mb-1 small d-flex align-items-center gap-2">
+                    <i className="bi bi-shield-check text-primary fs-5"></i>
+                    <span>Skill offerings are reviewed by platform administrators before appearing in the public directory.</span>
+                  </div>
+                  <div className="d-flex justify-content-end gap-2">
+                    <button type="button" className="btn btn-light px-4" onClick={() => setShowPostModal(false)}>Cancel</button>
+                    <button type="submit" className="btn btn-primary px-4 fw-bold">Submit for Approval</button>
+                  </div>
                 </div>
               </form>
             </div>

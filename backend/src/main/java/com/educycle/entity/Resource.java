@@ -56,6 +56,12 @@ public class Resource {
     @Enumerated(EnumType.STRING)
     private ResourceStatus status = ResourceStatus.AVAILABLE;
 
+    @Column(name = "approved")
+    private Boolean approved = false;
+
+    @Column(name = "approval_status")
+    private String approvalStatus = "PENDING";
+
     @Column(name = "image_url")
     private String imageUrl;
 
@@ -159,6 +165,22 @@ public class Resource {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Boolean getApproved() {
+        return approved != null ? approved : false;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
+    }
+
+    public String getApprovalStatus() {
+        return approvalStatus != null ? approvalStatus : (Boolean.TRUE.equals(approved) ? "APPROVED" : "PENDING");
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
 
     public LocalDateTime getUpdatedAt() {

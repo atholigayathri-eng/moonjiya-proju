@@ -9,6 +9,7 @@ import RequestModal from '../components/RequestModal';
 import { resourceService } from '../services/resourceService';
 import { skillService } from '../services/skillService';
 import { requestService } from '../services/requestService';
+import { statsService } from '../services/miscServices';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 
@@ -21,6 +22,11 @@ const Home = () => {
 
   const [resources, setResources] = useState([]);
   const [skills, setSkills] = useState([]);
+  const [liveStats, setLiveStats] = useState({
+    resources: null,
+    skills: null,
+    students: null
+  });
   const [loading, setLoading] = useState(true);
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -42,12 +48,25 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [resData, skillData] = await Promise.all([
+        const [resData, skillData, statsData] = await Promise.all([
           resourceService.getAll({ limit: 4 }),
-          skillService.getAll({ limit: 4 })
+          skillService.getAll({ limit: 4 }),
+          statsService.getLiveStats()
         ]);
-        setResources(resData.content || resData || []);
-        setSkills(skillData.content || skillData || []);
+        const rawRes = resData.content || resData || [];
+        const rawSkills = skillData.content || skillData || [];
+        const approvedRes = rawRes.filter(item => item.approvalStatus ? item.approvalStatus === 'APPROVED' : item.approved !== false);
+        const approvedSkills = rawSkills.filter(item => item.approvalStatus ? item.approvalStatus === 'APPROVED' : item.approved !== false);
+        setResources(approvedRes);
+        setSkills(approvedSkills);
+
+        if (statsData) {
+          setLiveStats({
+            resources: statsData.resourcesShared ?? statsData.totalResources ?? approvedRes.length,
+            skills: statsData.skillsOffered ?? statsData.skillSessions ?? statsData.totalSkills ?? approvedSkills.length,
+            students: statsData.activeStudents ?? statsData.totalUsers ?? 0
+          });
+        }
       } catch (err) {
         console.error("Failed to load home data:", err);
       } finally {
@@ -274,7 +293,9 @@ const Home = () => {
               >
                 <i className="bi bi-box-seam-fill fs-4"></i>
               </div>
-              <h3 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>500+</h3>
+              <h3 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>
+                {liveStats.resources !== null ? liveStats.resources : (resources.length || 0)}
+              </h3>
               <p className="text-muted small mb-0 fw-semibold">Resources Shared</p>
             </div>
           </div>
@@ -286,8 +307,10 @@ const Home = () => {
               >
                 <i className="bi bi-people-fill fs-4"></i>
               </div>
-              <h3 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>320+</h3>
-              <p className="text-muted small mb-0 fw-semibold">Skill Sessions</p>
+              <h3 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>
+                {liveStats.skills !== null ? liveStats.skills : (skills.length || 0)}
+              </h3>
+              <p className="text-muted small mb-0 fw-semibold">Peer Skills Offered</p>
             </div>
           </div>
           <div className="col-md-3 col-6">
@@ -298,7 +321,9 @@ const Home = () => {
               >
                 <i className="bi bi-mortarboard-fill fs-4"></i>
               </div>
-              <h3 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>1,200+</h3>
+              <h3 className="fw-extrabold text-dark mb-1" style={{ letterSpacing: '-0.02em' }}>
+                {liveStats.students !== null ? liveStats.students : 0}
+              </h3>
               <p className="text-muted small mb-0 fw-semibold">Active Students</p>
             </div>
           </div>

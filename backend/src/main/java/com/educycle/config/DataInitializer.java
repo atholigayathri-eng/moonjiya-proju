@@ -95,6 +95,8 @@ public class DataInitializer {
                 res.setCondition(ResourceCondition.GOOD);
                 res.setExchangeType(ExchangeType.DONATE);
                 res.setQuantity(1);
+                res.setApproved(true);
+                res.setApprovalStatus("APPROVED");
                 resourceRepository.save(res);
 
                 // Sample Skill
@@ -106,9 +108,27 @@ public class DataInitializer {
                 skill.setDescription("1-on-1 tutoring sessions for building REST APIs with Java Spring Boot.");
                 skill.setTeachingMethod(TeachingMethod.ONE_ON_ONE);
                 skill.setAvailability("Evenings & Weekends");
+                skill.setApproved(true);
+                skill.setApprovalStatus("APPROVED");
                 skillRepository.save(skill);
 
                 System.out.println(">>> Sample User, Resource, and Skill Seeded Successfully!");
+            }
+
+            // Ensure all pre-existing records have valid approval status
+            for (Resource r : resourceRepository.findAll()) {
+                if (r.getApproved() == null || r.getApprovalStatus() == null) {
+                    r.setApproved(true);
+                    r.setApprovalStatus("APPROVED");
+                    resourceRepository.save(r);
+                }
+            }
+            for (Skill s : skillRepository.findAll()) {
+                if (s.getApproved() == null || s.getApprovalStatus() == null) {
+                    s.setApproved(true);
+                    s.setApprovalStatus("APPROVED");
+                    skillRepository.save(s);
+                }
             }
         };
     }

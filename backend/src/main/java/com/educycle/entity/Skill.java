@@ -54,6 +54,12 @@ public class Skill {
     @Enumerated(EnumType.STRING)
     private SkillStatus status = SkillStatus.AVAILABLE;
 
+    @Column(name = "approved")
+    private Boolean approved = false;
+
+    @Column(name = "approval_status")
+    private String approvalStatus = "PENDING";
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -154,6 +160,22 @@ public class Skill {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Boolean getApproved() {
+        return approved != null ? approved : false;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
+    }
+
+    public String getApprovalStatus() {
+        return approvalStatus != null ? approvalStatus : (Boolean.TRUE.equals(approved) ? "APPROVED" : "PENDING");
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
 
     public LocalDateTime getUpdatedAt() {

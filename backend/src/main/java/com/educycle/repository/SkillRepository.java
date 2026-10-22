@@ -17,4 +17,9 @@ public interface SkillRepository extends JpaRepository<Skill, Long> {
     List<Skill> findByStatus(SkillStatus status);
     List<Skill> findBySkillNameContainingIgnoreCase(String keyword);
     List<Skill> findByCategoryAndLevel(String category, SkillLevel level);
+    List<Skill> findByApprovedTrue();
+    List<Skill> findByApproved(Boolean approved);
+    List<Skill> findByApprovalStatus(String approvalStatus);
+    long countByApproved(Boolean approved);
+    long countByApprovalStatus(String approvalStatus);
 }

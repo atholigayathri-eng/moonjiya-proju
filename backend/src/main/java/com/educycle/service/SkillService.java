@@ -30,7 +30,7 @@ public class SkillService {
             }
             return new java.util.ArrayList<>();
         }
-        return skillRepository.findAll();
+        return skillRepository.findByApprovedTrue();
     }
 
     public Optional<Skill> getSkillById(Long id) {
@@ -43,6 +43,8 @@ public class SkillService {
         s.setCategory(dto.getCategory());
         s.setDescription(dto.getDescription());
         s.setAvailability(dto.getAvailability());
+        s.setApproved(false);
+        s.setApprovalStatus("PENDING");
 
         if (dto.getLevel() != null) {
             try {

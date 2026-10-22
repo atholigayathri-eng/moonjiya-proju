@@ -51,8 +51,59 @@ export const adminService = {
   },
 
   getResources: async () => {
-    const response = await API.get('/resources');
-    return response.data.content || response.data;
+    try {
+      const response = await API.get('/admin/resources');
+      return response.data.content || response.data;
+    } catch (e) {
+      if (e.response?.status === 404) {
+        const fallback = await API.get('/resources');
+        return fallback.data.content || fallback.data;
+      }
+      throw e;
+    }
+  },
+
+  getSkills: async () => {
+    try {
+      const response = await API.get('/admin/skills');
+      return response.data.content || response.data;
+    } catch (e) {
+      if (e.response?.status === 404) {
+        const fallback = await API.get('/skills');
+        return fallback.data.content || fallback.data;
+      }
+      throw e;
+    }
+  },
+
+  approveResource: async (id) => {
+    const response = await API.put(`/admin/resources/${id}/approve`);
+    return response.data;
+  },
+
+  rejectResource: async (id) => {
+    const response = await API.put(`/admin/resources/${id}/reject`);
+    return response.data;
+  },
+
+  deleteResource: async (id) => {
+    const response = await API.delete(`/admin/resources/${id}`);
+    return response.data;
+  },
+
+  approveSkill: async (id) => {
+    const response = await API.put(`/admin/skills/${id}/approve`);
+    return response.data;
+  },
+
+  rejectSkill: async (id) => {
+    const response = await API.put(`/admin/skills/${id}/reject`);
+    return response.data;
+  },
+
+  deleteSkill: async (id) => {
+    const response = await API.delete(`/admin/skills/${id}`);
+    return response.data;
   },
 
   suspendUser: async (userId) => {
@@ -61,12 +112,38 @@ export const adminService = {
   },
 
   deletePost: async (postId) => {
-    const response = await API.delete(`/resources/${postId}`);
+    const response = await API.delete(`/admin/resources/${postId}`);
     return response.data;
   },
 
   getStatistics: async () => {
     const response = await API.get('/admin/stats');
     return response.data;
+  }
+};
+
+export const statsService = {
+  getLiveStats: async () => {
+    try {
+      const response = await API.get('/stats');
+      return response.data;
+    } catch (e) {
+      // Fallback to /admin/stats if public /stats is not yet deployed on server
+      try {
+        const adminRes = await API.get('/admin/stats');
+        const data = adminRes.data || {};
+        return {
+          activeStudents: data.totalUsers || 0,
+          totalUsers: data.totalUsers || 0,
+          resourcesShared: data.approvedResources || data.totalResources || 0,
+          totalResources: data.totalResources || 0,
+          skillsOffered: data.approvedSkills || data.totalSkills || 0,
+          skillSessions: data.approvedSkills || data.totalSkills || 0,
+          totalSkills: data.totalSkills || 0,
+        };
+      } catch (err) {
+        return null;
+      }
+    }
   }
 };

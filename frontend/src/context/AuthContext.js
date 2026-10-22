@@ -41,7 +41,19 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (fbErr) {
+      console.warn("Firebase sign-in note:", fbErr?.code || fbErr?.message);
+      // If user exists in backend DB but not in Firebase, register them in Firebase
+      if (fbErr.code === 'auth/user-not-found' || fbErr.code === 'auth/invalid-credential') {
+        try {
+          await createUserWithEmailAndPassword(auth, email, password);
+        } catch (createErr) {
+          console.warn("Firebase auto-create note:", createErr?.code || createErr?.message);
+        }
+      }
+    }
     const data = await authService.login(email, password);
     const jwtToken = data.token || data.jwt;
     const userData = {

@@ -58,6 +58,20 @@ const ResourceCard = ({ resource, onRequest }) => {
         >
           {resource.exchangeType ? resource.exchangeType.toUpperCase() : 'DONATE'}
         </span>
+        {resource.approvalStatus && resource.approvalStatus !== 'APPROVED' && (
+          <span 
+            className="badge position-absolute top-0 start-0 m-3 px-2.5 py-1.5 fw-bold shadow-sm"
+            style={{ 
+              background: resource.approvalStatus === 'REJECTED' ? 'rgba(220, 38, 38, 0.95)' : 'rgba(217, 119, 6, 0.95)',
+              color: '#fff',
+              fontSize: '0.72rem',
+              backdropFilter: 'blur(8px)'
+            }}
+          >
+            <i className={`bi ${resource.approvalStatus === 'REJECTED' ? 'bi-x-circle-fill' : 'bi-hourglass-split'} me-1`}></i>
+            {resource.approvalStatus === 'REJECTED' ? 'Rejected' : 'Pending Approval'}
+          </span>
+        )}
       </div>
 
       <div className="card-body d-flex flex-column p-4 flex-grow-1">
